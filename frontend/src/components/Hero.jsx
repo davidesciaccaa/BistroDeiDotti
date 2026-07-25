@@ -11,11 +11,28 @@ export function Hero() {
   const [showLeftIndicator, setShowLeftIndicator] = useState(false);
   const [showRightIndicator, setShowRightIndicator] = useState(false);
 
+  const scrollNav = (direction) => {
+    if (navRef.current) {
+      navRef.current.scrollBy({
+        left: direction === 'left' ? -250 : 250,
+        behavior: 'smooth',
+      });
+    }
+  };
+
   const checkScroll = useCallback(() => {
     if (navRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = navRef.current;
+
+      console.log({
+        scrollLeft,
+        scrollWidth,
+        clientWidth,
+        overflow: scrollWidth > clientWidth
+      });
+
       setShowLeftIndicator(scrollLeft > 10);
-      setShowRightIndicator(scrollLeft < scrollWidth - clientWidth - 10);
+      setShowRightIndicator(scrollWidth > clientWidth && scrollLeft < scrollWidth - clientWidth - 10);
     }
   }, []);
 
@@ -44,9 +61,15 @@ export function Hero() {
         </a>
         <div className="header-actions">
           <div className={`site-nav-wrapper ${showLeftIndicator ? 'has-left-scroll' : ''} ${showRightIndicator ? 'has-right-scroll' : ''}`}>
-            <div className="nav-scroll-hint nav-scroll-hint--left" aria-hidden="true">
-              <span>&#8249;</span>
-            </div>
+            {showLeftIndicator && (
+              <button
+                className="nav-scroll-hint nav-scroll-hint--left"
+                onClick={() => scrollNav('left')}
+                aria-label="Scorri menu a sinistra"
+              >
+                <span>&#8249;</span>
+              </button>
+            )}
             <nav className="site-nav" aria-label="Navigazione principale" ref={navRef}>
               <a href="#antipasti">{t('nav.antipasti')}</a>
               <a href="#sfizi">{t('nav.sfizi')}</a>
@@ -64,9 +87,15 @@ export function Hero() {
               <a href="#vini-bianchi">{t('nav.vini')}</a>
               <a href="#contatti">{t('nav.contatti')}</a>
             </nav>
-            <div className="nav-scroll-hint nav-scroll-hint--right" aria-hidden="true">
-              <span>&#8250;</span>
-            </div>
+            {showRightIndicator && (
+              <button
+                className="nav-scroll-hint nav-scroll-hint--right"
+                onClick={() => scrollNav('right')}
+                aria-label="Scorri menu a destra"
+              >
+                <span>&#8250;</span>
+              </button>
+            )}
           </div>
           <LanguageSwitcher />
         </div>

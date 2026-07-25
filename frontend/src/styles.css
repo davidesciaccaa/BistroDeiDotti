@@ -1208,3 +1208,76 @@ html {
     padding: 16px 0;
   }
 }
+
+.nav-scroll-hint {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  border: none;
+
+  background: rgba(0,0,0,0.6);
+  color: white;
+
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 9999;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+}
+
+.has-left-scroll .nav-scroll-hint--left,
+.has-right-scroll .nav-scroll-hint--right {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nav-scroll-hint--left {
+  left: 0;
+}
+
+.nav-scroll-hint--right {
+  right: 0;
+}
+
+.site-nav-wrapper {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+
+  max-width: none;
+  width: 100%;
+
+  overflow-x: auto;
+  white-space: nowrap;
+
+  justify-content: flex-start;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.site-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.site-nav a {
+  flex: 0 0 auto;
+}
