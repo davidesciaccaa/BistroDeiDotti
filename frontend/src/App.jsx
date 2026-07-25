@@ -332,6 +332,15 @@ function App() {
     }
   }, []);
 
+  const scrollCategoryNav = (direction) => {
+    if (navRef.current) {
+      navRef.current.scrollBy({
+        left: direction === 'left' ? -120 : 120,
+        behavior: 'smooth',
+      });
+    }
+  };
+
   useEffect(() => {
     const nav = navRef.current;
     if (nav) {
@@ -395,9 +404,15 @@ function App() {
 
         {/* Minimal Category Navigation */}
         <div className={`category-nav-wrapper ${showLeftIndicator ? 'has-left-scroll' : ''} ${showRightIndicator ? 'has-right-scroll' : ''}`}>
-          <div className="scroll-hint scroll-hint--left" aria-hidden="true">
-            <span>&#8249;</span>
-          </div>
+          {showLeftIndicator && (
+            <button
+              className="scroll-hint scroll-hint--left"
+              onClick={() => scrollCategoryNav('left')}
+              aria-label="Scorri categorie a sinistra"
+            >
+              ‹
+            </button>
+          )}
           <nav className="category-nav" ref={navRef}>
             {menuSections.map((section) => (
               <a 
@@ -409,9 +424,15 @@ function App() {
               </a>
             ))}
           </nav>
-          <div className="scroll-hint scroll-hint--right" aria-hidden="true">
-            <span>&#8250;</span>
-          </div>
+          {showRightIndicator && (
+            <button
+              className="scroll-hint scroll-hint--right"
+              onClick={() => scrollCategoryNav('right')}
+              aria-label="Scorri categorie a destra"
+            >
+              ›
+            </button>
+          )}
         </div>
 
         <div className="menu-section-list">
