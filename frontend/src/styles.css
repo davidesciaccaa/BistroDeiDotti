@@ -1209,32 +1209,34 @@ html {
   }
 }
 
+
+/* Hero navigation arrows */
+
 .nav-scroll-hint {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 0;
+  bottom: 0;
 
-  width: 36px;
-  height: 36px;
+  width: 55px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 50%;
   border: none;
-
-  background: rgba(0,0,0,0.6);
-  color: white;
-
-  font-size: 24px;
   cursor: pointer;
-  z-index: 9999;
+
+  color: white;
 
   opacity: 0;
   pointer-events: none;
-  transition: opacity .2s ease;
+
+  z-index: 50;
+
+  transition:
+    opacity .25s ease;
 }
+
 
 .has-left-scroll .nav-scroll-hint--left,
 .has-right-scroll .nav-scroll-hint--right {
@@ -1242,42 +1244,124 @@ html {
   pointer-events: auto;
 }
 
-.nav-scroll-hint--left {
-  left: 0;
+
+/* freccia */
+
+.nav-arrow {
+  font-family: Georgia, serif;
+  font-size: 32px;
+  font-weight: 300;
+
+  text-shadow:
+    0 3px 15px rgba(0,0,0,.9);
+
+  transition:
+    transform .25s ease;
 }
 
-.nav-scroll-hint--right {
-  right: 0;
-}
+/* Hero navigation arrows */
 
 .site-nav-wrapper {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
   position: relative;
+
+  /* spazio fisico per le frecce */
+  padding: 0 55px;
 }
+
 
 .site-nav {
   display: flex;
   align-items: center;
   gap: 1.5rem;
 
-  max-width: none;
   width: 100%;
 
   overflow-x: auto;
   white-space: nowrap;
 
-  justify-content: flex-start;
-
   scrollbar-width: none;
   -ms-overflow-style: none;
+
+  padding: 0;
 }
+
 
 .site-nav::-webkit-scrollbar {
-  display: none;
+  display:none;
 }
 
-.site-nav a {
-  flex: 0 0 auto;
+
+.nav-scroll-hint {
+  position:absolute;
+
+  top:0;
+  bottom:0;
+
+  width:55px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border:0;
+
+  color:white;
+  cursor:pointer;
+
+  z-index:10;
+
+  opacity:0;
+  pointer-events:none;
+
+  transition:opacity .25s ease;
+}
+
+
+.has-left-scroll .nav-scroll-hint--left,
+.has-right-scroll .nav-scroll-hint--right {
+  opacity:1;
+  pointer-events:auto;
+}
+
+
+.nav-scroll-hint--left {
+  left:0;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(18,11,12,.95),
+      rgba(18,11,12,.35),
+      transparent
+    );
+}
+
+
+.nav-scroll-hint--right {
+  right:0;
+
+  background:
+    linear-gradient(
+      270deg,
+      rgba(18,11,12,.95),
+      rgba(18,11,12,.35),
+      transparent
+    );
+}
+
+
+.nav-arrow {
+  font-family: Georgia, serif;
+  font-size:30px;
+  text-shadow:
+    0 3px 15px rgba(0,0,0,.9);
+
+  transition:transform .25s ease;
+}
+
+
+.nav-scroll-hint:hover .nav-arrow {
+  transform:scale(1.15);
 }

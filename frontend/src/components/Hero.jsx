@@ -63,13 +63,14 @@ export function Hero() {
           <div className={`site-nav-wrapper ${showLeftIndicator ? 'has-left-scroll' : ''} ${showRightIndicator ? 'has-right-scroll' : ''}`}>
             {showLeftIndicator && (
               <button
-                className="nav-scroll-hint nav-scroll-hint--left"
-                onClick={() => scrollNav('left')}
-                aria-label="Scorri menu a sinistra"
-              >
-                <span>&#8249;</span>
-              </button>
-            )}
+              className="nav-scroll-hint nav-scroll-hint--left"
+              style={{ opacity: showLeftIndicator ? 1 : 0 }}
+              onClick={() => scrollNav('left')}
+              aria-label="Scorri menu a sinistra"
+            >
+              <span className="nav-arrow">←</span>
+            </button>)}
+
             <nav className="site-nav" aria-label="Navigazione principale" ref={navRef}>
               <a href="#antipasti">{t('nav.antipasti')}</a>
               <a href="#sfizi">{t('nav.sfizi')}</a>
@@ -87,15 +88,15 @@ export function Hero() {
               <a href="#vini-bianchi">{t('nav.vini')}</a>
               <a href="#contatti">{t('nav.contatti')}</a>
             </nav>
-            {showRightIndicator && (
-              <button
-                className="nav-scroll-hint nav-scroll-hint--right"
-                onClick={() => scrollNav('right')}
-                aria-label="Scorri menu a destra"
-              >
-                <span>&#8250;</span>
-              </button>
-            )}
+              {showRightIndicator && (
+                <button
+                  className="nav-scroll-hint nav-scroll-hint--right"
+                  onClick={() => scrollNav('right')}
+                  aria-label="Scorri menu a destra"
+                >
+                  <span className="nav-arrow">→</span>
+                </button>
+              )}
           </div>
           <LanguageSwitcher />
         </div>
