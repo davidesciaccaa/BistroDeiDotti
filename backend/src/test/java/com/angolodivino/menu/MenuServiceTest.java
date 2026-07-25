@@ -30,7 +30,25 @@ class MenuServiceTest {
         List<MenuSectionResponse> sections = menuService.findMenuSections();
         assertThat(sections)
                 .extracting(MenuSectionResponse::id)
-                .containsExactly("aperitivo", "drink", "vini", "amari", "superalcolici", "bevande");
+                .containsExactly(
+                        "antipasti",
+                        "sfizi",
+                        "insalatone",
+                        "primi-terra",
+                        "secondi-terra",
+                        "primi-mare",
+                        "secondi-mare",
+                        "dolci",
+                        "bevande",
+                        "gin",
+                        "cocktails",
+                        "amari",
+                        "distillati",
+                        "vini-bianchi",
+                        "vini-rosati",
+                        "vini-rossi",
+                        "vini-bio",
+                        "prosecco");
     }
 
     @Test
@@ -68,7 +86,7 @@ class MenuServiceTest {
 
         List<MenuSectionResponse> sections = menuService.findMenuSections();
         assertThat(priceOf(sections, "negroni")).isEqualTo("9 €");
-        assertThat(priceOf(sections, "americano")).isEqualTo("7 €");
+        assertThat(priceOf(sections, "aperol_spritz")).isEqualTo("5 €");
     }
 
     @Test
@@ -80,10 +98,10 @@ class MenuServiceTest {
 
     @Test
     void updatePricesWritesOverridesAndReturnsUpdatedMenu() {
-        List<MenuSectionResponse> sections = menuService.updatePrices(Map.of("negroni", "9 €", "mojito", "10 €"));
+        List<MenuSectionResponse> sections = menuService.updatePrices(Map.of("negroni", "9 €", "mojito_scuro", "10 €"));
 
         assertThat(priceOf(sections, "negroni")).isEqualTo("9 €");
-        assertThat(priceOf(sections, "mojito")).isEqualTo("10 €");
+        assertThat(priceOf(sections, "mojito_scuro")).isEqualTo("10 €");
         assertThat(overridesFile).exists();
         assertThat(priceOf(menuService.findMenuSections(), "negroni")).isEqualTo("9 €");
     }
@@ -91,11 +109,11 @@ class MenuServiceTest {
     @Test
     void updatePricesMergesWithExistingOverrides() {
         menuService.updatePrices(Map.of("negroni", "9 €"));
-        menuService.updatePrices(Map.of("mojito", "10 €"));
+        menuService.updatePrices(Map.of("mojito_scuro", "10 €"));
 
         List<MenuSectionResponse> sections = menuService.findMenuSections();
         assertThat(priceOf(sections, "negroni")).isEqualTo("9 €");
-        assertThat(priceOf(sections, "mojito")).isEqualTo("10 €");
+        assertThat(priceOf(sections, "mojito_scuro")).isEqualTo("10 €");
     }
 
     @Test
@@ -129,13 +147,23 @@ class MenuServiceTest {
     @Test
     void updatePricesAcceptsTheExistingPriceFormats() {
         List<MenuSectionResponse> sections = menuService.updatePrices(Map.of(
-                "prosecco_doc", "5 € / 20 €",
+                "calice_vino", "5 € / 20 €",
                 "acqua", "2,50 €",
-                "armagnac", "-"));
+                "crudo_iberico", "-"));
 
-        assertThat(priceOf(sections, "prosecco_doc")).isEqualTo("5 € / 20 €");
+        assertThat(priceOf(sections, "calice_vino")).isEqualTo("5 € / 20 €");
         assertThat(priceOf(sections, "acqua")).isEqualTo("2,50 €");
-        assertThat(priceOf(sections, "armagnac")).isEqualTo("-");
+        assertThat(priceOf(sections, "crudo_iberico")).isEqualTo("-");
+    }
+
+    @Test
+    void updatePricesCanRestoreTheUnpricedMenuItem() {
+        menuService.updatePrices(Map.of("crudo_iberico", "12 €"));
+        List<MenuSectionResponse> sections = menuService.updatePrices(Map.of("crudo_iberico", ""));
+
+        assertThat(priceOf(sections, "crudo_iberico")).isEmpty();
+        assertThat(new MenuOverridesStore(propertiesFor(overridesFile)).readPrices())
+                .doesNotContainKey("crudo_iberico");
     }
 
     private static MenuProperties propertiesFor(Path file) {

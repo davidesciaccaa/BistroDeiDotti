@@ -6,9 +6,9 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
-public class AngoloDiVinoApplication {
+public class BistroDeiDottiApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AngoloDiVinoApplication.class, args);
+        SpringApplication.run(BistroDeiDottiApplication.class, args);
     }
 }

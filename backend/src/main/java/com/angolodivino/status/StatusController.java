@@ -11,6 +11,6 @@ public class StatusController {
 
     @GetMapping("/status")
     public ApiStatusResponse status() {
-        return new ApiStatusResponse("angolo-di-vino-api", "UP", Instant.now());
+        return new ApiStatusResponse("bistro-dei-dotti-api", "UP", Instant.now());
     }
 }

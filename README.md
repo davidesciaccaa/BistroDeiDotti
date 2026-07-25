@@ -1,6 +1,6 @@
-# L'Angolo diVino
+# Il Bistrò dei Dotti
 
-Applicazione full-stack per un cocktail bar, composta da:
+Applicazione full-stack per il sito ristorante de Il Bistrò dei Dotti, composta da:
 
 - `frontend`: React + Vite
 - `backend`: Spring Boot 3 + Java 21

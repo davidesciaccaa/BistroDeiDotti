@@ -123,7 +123,7 @@ export function AdminMenuEditor({ onSignedOut }) {
       <div className="admin-topbar-wrapper">
         <header className="admin-topbar">
           <div className="admin-topbar__identity">
-            <p className="admin-eyebrow">L&apos;Angolo diVino</p>
+            <p className="admin-eyebrow">Il Bistr&ograve; dei Dotti</p>
             <h1 className="admin-topbar__title">Gestione prezzi</h1>
           </div>
 

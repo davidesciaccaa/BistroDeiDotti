@@ -12,10 +12,10 @@
     </parent>
 
     <groupId>com.angolodivino</groupId>
-    <artifactId>angolo-di-vino-api</artifactId>
+    <artifactId>bistro-dei-dotti-api</artifactId>
     <version>0.1.0</version>
-    <name>angolo-di-vino-api</name>
-    <description>Backend API for L'Angolo diVino cocktail bar.</description>
+    <name>bistro-dei-dotti-api</name>
+    <description>Backend API per Il Bistrò dei Dotti.</description>
 
     <properties>
         <java.version>21</java.version>

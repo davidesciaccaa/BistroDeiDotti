@@ -1,231 +1,321 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { fetchApiStatus, fetchMenuSections } from './api/barApi.js';
+import { fetchMenuSections } from './api/barApi.js';
 import { Hero } from './components/Hero.jsx';
 import { MenuItemCard } from './components/MenuItemCard.jsx';
 
 const fallbackMenuSections = [
   {
-    id: 'aperitivo',
-    title: 'Aperitivo',
-    description: 'Assaggi pensati per aprire la serata con calma.',
+    id: 'antipasti',
+    title: 'Antipasti',
+    description: 'Selezione di antipasti freschi di mare e di terra.',
     items: [
-      {
-        id: 'tris',
-        name: 'Tris',
-        subtitle: 'Assaggi locali',
-        description: 'Una piccola selezione di stuzzichini del giorno.',
-        notes: [],
-        price: '3 €'
-      },
-      {
-        id: 'tagliere',
-        name: 'Tagliere',
-        subtitle: '',
-        description: '',
-        notes: [],
-        price: '10 €'
-      },
-      {
-        id: 'fritti',
-        name: 'Fritti',
-        subtitle: '',
-        description: '',
-        notes: [],
-        price: '10 €'
-      },
-      {
-        id: 'ostriche',
-        name: 'Ostriche',
-        subtitle: '',
-        description: 'Ostriche fresche',
-        notes: ['Fresco', 'Mare'],
-        price: '10 €'
-      }
+      { id: 'crudo_di_mare', name: 'Crudo di mare', subtitle: 'Su richiesta', description: '', notes: [], price: '25 €' },
+      { id: 'antipasto_di_terra', name: 'Antipasto di terra', subtitle: 'Per 2 persone', description: '', notes: [], price: '19 €' },
+      { id: 'mare_e_monti', name: 'Mare e monti', subtitle: '', description: '', notes: [], price: '20 €' },
+      { id: 'veli_crudo_mojito', name: 'Veli di crudo al mojito', subtitle: '', description: '', notes: [], price: '16 €' }
     ]
   },
   {
-    id: 'drink',
-    title: 'Cocktails',
-    description: 'I grandi classici e le nostre proposte miscelate.',
+    id: 'sfizi',
+    title: 'Sfizi',
+    description: 'Piccoli assaggi e stuzzichini da condividere.',
     items: [
-      // Pre-Dinner (7 euro) - Aperol/Campari Spritz (6 euro)
-      { id: 'americano', name: 'Americano', subtitle: 'Pre-Dinner', description: '(Vermouth Rosso, Campari, Soda)', notes: [], price: '7 €' },
-      { id: 'bellini', name: 'Bellini', subtitle: 'Pre-Dinner', description: '(Prosecco, Succo di pesca)', notes: [], price: '7 €' },
-      { id: 'garibaldi', name: 'Garibaldi', subtitle: 'Pre-Dinner', description: '(Campari, Succo d\'Arancia)', notes: [], price: '7 €' },
-      { id: 'negroni', name: 'Negroni', subtitle: 'Pre-Dinner', description: '(gin, Vermouth rosso, Campari, Fetta d\'arancia)', notes: [], price: '7 €' },
-      { id: 'negroni_sbagliato', name: 'Negroni Sbagliato', subtitle: 'Pre-Dinner', description: '(Vermouth rosso, Campari, prosecco, Fetta d\'arancia)', notes: [], price: '7 €' },
-      { id: 'martini_cocktail', name: 'Martini Cocktail', subtitle: 'Pre-Dinner', description: '(Gin, Vermouth Dry, scorza di lime, olive)', notes: [], price: '7 €' },
-      { id: 'mimosa', name: 'Mimosa', subtitle: 'Pre-Dinner', description: '(Prosecco, Succo d\'arancia)', notes: [], price: '7 €' },
-      { id: 'kir', name: 'Kir', subtitle: 'Pre-Dinner', description: '(vino bianco fermo, Crème de Cassis)', notes: [], price: '7 €' },
-      { id: 'kir_royale', name: 'Kir Royale', subtitle: 'Pre-Dinner', description: '(prosecco, Crème de Cassis)', notes: [], price: '7 €' },
-      { id: 'rossini', name: 'Rossini', subtitle: 'Pre-Dinner', description: '(Prosecco, Fragola)', notes: [], price: '7 €' },
-      { id: 'aperol_spritz', name: 'Aperol Spritz', subtitle: 'Pre-Dinner', description: '(Prosecco, Aperol, Soda, fetta d\'arancia)', notes: [], price: '6 €' },
-      { id: 'campari_spritz', name: 'Campari Spritz', subtitle: 'Pre-Dinner', description: '(Prosecco, Campari, Soda, fetta d\'arancia)', notes: [], price: '6 €' },
-      { id: 'manhattan', name: 'Manhattan', subtitle: 'Pre-Dinner', description: '(rye whiskey, vermouth rosso, angostura, ciliegina)', notes: [], price: '7 €' },
-      { id: 'dry_manhattan', name: 'Dry Manhattan', subtitle: 'Pre-Dinner', description: '(rye whiskey, vermouth dry, angostura, buccia di limone)', notes: [], price: '7 €' },
-      { id: 'perfect_manhattan', name: 'Perfect Manhattan', subtitle: 'Pre-Dinner', description: '(rye whiskey, vermouth rosso, vermouth dry, ciliegina)', notes: [], price: '7 €' },
-      { id: 'rob_roy', name: 'Rob Roy', subtitle: 'Pre-Dinner', description: '(Scotch whisky, vermouth rosso, angostura, ciliegina)', notes: [], price: '7 €' },
-      { id: 'dry_martini', name: 'Dry Martini', subtitle: 'Pre-Dinner / Martini Cocktails', description: '(gin, vermouth dry, sprizzo di buccia di limone)', notes: [], price: '7 €' },
-      { id: 'vodka_martini', name: 'Vodka Martini', subtitle: 'Pre-Dinner / Martini Cocktails', description: '(vodka, vermouth dry, sprizzo di buccia di limone)', notes: [], price: '7 €' },
-      { id: 'sweet_martini', name: 'Sweet Martini', subtitle: 'Pre-Dinner / Martini Cocktails', description: '(gin, vermouth rosso, ciliegina)', notes: [], price: '7 €' },
-      { id: 'perfect_martini', name: 'Perfect Martini', subtitle: 'Pre-Dinner / Martini Cocktails', description: '(gin, vermouth rosso, vermouth dry, ciliegina)', notes: [], price: '7 €' },
-
-      // After Dinner (8 euro)
-      { id: 'black_russian', name: 'Black Russian', subtitle: 'After Dinner', description: '(Vodka, Kahlua)', notes: [], price: '8 €' },
-      { id: 'white_russian', name: 'White Russian', subtitle: 'After Dinner', description: '(Vodka, Kahlua, Crema di latte)', notes: [], price: '8 €' },
-      { id: 'cosmopolitan', name: 'Cosmopolitan', subtitle: 'After Dinner', description: '(Vodka, Triple Sec, Cranberry, Limone)', notes: [], price: '8 €' },
-      { id: 'daiquiri', name: 'Daiquiri', subtitle: 'After Dinner', description: '(Rum, Succo di limone o lime, Sciroppo di zucchero)', notes: [], price: '8 €' },
-      { id: 'french_connection', name: 'French connection', subtitle: 'After Dinner', description: '(Cognac, Disaronno)', notes: [], price: '8 €' },
-      { id: 'mexican_passion', name: 'Mexican passion', subtitle: 'After Dinner', description: '(tequila blanco, triple sec, succo di lime, succo di passion fruit, fetta di limone)', notes: [], price: '8 €' },
-      { id: 'gin_fizz', name: 'Gin Fizz', subtitle: 'After Dinner', description: '(Gin, Succo di limone, Sciroppo di zucchero, Soda water)', notes: [], price: '8 €' },
-      { id: 'godfather', name: 'Godfather', subtitle: 'After Dinner', description: '(Whisky, Disaronno)', notes: [], price: '8 €' },
-      { id: 'godmother', name: 'Godmother', subtitle: 'After Dinner', description: '(Vodka, Disaronno)', notes: [], price: '8 €' },
-      { id: 'kamikaze', name: 'Kamikaze', subtitle: 'After Dinner', description: '(vodka, triple sec, succo di limone)', notes: [], price: '8 €' },
-      { id: 'whitelady', name: 'Whitelady', subtitle: 'After Dinner', description: '(Gin, Triple Sec, Succo di limone)', notes: [], price: '8 €' },
-      { id: 'limbo', name: 'Limbo', subtitle: 'After Dinner', description: '(Rum bianco, Creme de banana, Succo d\'arancia)', notes: [], price: '8 €' },
-      { id: 'margarita', name: 'Margarita', subtitle: 'After Dinner', description: '(Tequila, Triple Sec, Succo di limone o lime)', notes: [], price: '8 €' },
-      { id: 'orgasm', name: 'Orgasm', subtitle: 'After Dinner', description: '(Baileys, Amaretto, Kahlua)', notes: [], price: '8 €' },
-      { id: 'melon_ball', name: 'Melon ball', subtitle: 'After Dinner', description: '(Midori, Vodka, Succo d\'arancia)', notes: [], price: '8 €' },
-      { id: 'paradise', name: 'Paradise', subtitle: 'After Dinner', description: '(Gin, Apricot brandy, Succo d\'arancia)', notes: [], price: '8 €' },
-      { id: 'rusty_nail', name: 'Rusty nail', subtitle: 'After Dinner', description: '(Scotch whisky, Drambuie)', notes: [], price: '8 €' },
-      { id: 'sidecar', name: 'Sidecar', subtitle: 'After Dinner', description: '(Cognac, Triple sec o Cointreau, Succo di limone)', notes: [], price: '8 €' },
-      { id: 'stinger', name: 'Stinger', subtitle: 'After Dinner', description: '(Brandy, Crema di menta bianca)', notes: [], price: '8 €' },
-
-      // Long Drinks (8 euro)
-      { id: 'cuba_libre', name: 'Cuba Libre', subtitle: 'Long Drinks', description: '(Rum, Coca cola, Succo di lime)', notes: [], price: '8 €' },
-      { id: 'lynchburg_lemonade', name: 'Lynchburg lemonade', subtitle: 'Long Drinks', description: '(jack Daniel\'s, triple sec, succo di limone, sprite)', notes: [], price: '8 €' },
-      { id: 'pina_colada', name: 'Pina colada', subtitle: 'Long Drinks', description: '(Rum, Crema di cocco, Ananas)', notes: [], price: '8 €' },
-      { id: 'pina_colada_varianti', name: 'Varianti di Pina Colada', subtitle: 'Long Drinks', description: '', notes: [], price: '8 €' },
-      { id: 'screwdriver', name: 'Screwdriver', subtitle: 'Long Drinks', description: '(Vodka, Succo d\'arancia)', notes: [], price: '8 €' },
-      { id: 'sex_on_the_beach', name: 'Sex on the beach', subtitle: 'Long Drinks', description: '(vodka, liquore di pesca, succo d\'arancia, succo di cranberry)', notes: [], price: '8 €' },
-      { id: 'tequila_sunrise', name: 'Tequila sunrise', subtitle: 'Long Drinks', description: '(Tequila, Succo d\'arancia, Granatina)', notes: [], price: '8 €' },
-
-      // Iced Tea (6/7 euro)
-      { id: 'long_island_iced_tea', name: 'Long Island Ice tea', subtitle: 'Iced Tea', description: '(Vodka, Gin, Rum, Triple Sec, Sweet & Sour, Top of Coke)', notes: [], price: '8 €' },
-      { id: 'texas_iced_tea', name: 'Texas Ice tea', subtitle: 'Iced Tea', description: '(Vodka, Gin, Rum, Triple Sec, Tequila, Sweet & Sour, Top of Coke)', notes: [], price: '8 €' },
-      { id: 'japanese_iced_tea', name: 'Japanese Ice tea', subtitle: 'Iced Tea', description: '(Vodka, Gin, Rum, Midori, Sweet & Sour, Lemonsoda)', notes: [], price: '8 €' },
-      { id: 'italian_iced_tea', name: 'Italian ice tea', subtitle: 'Iced Tea', description: '(Vodka, Gin, Rum, Amaretto, Sweet & Sour, Lemonsoda)', notes: [], price: '8 €' },
-      { id: 'california_iced_tea', name: 'California ice tea', subtitle: 'Iced Tea', description: '(Vodka, Gin, Rum, Triple Sec, Sweet & Sour, Succo d\'arancia)', notes: [], price: '8 €' },
-
-      // Pestati e Frozen (8 euro)
-      { id: 'caipirinha', name: 'Caipirinha', subtitle: 'Pestati e Frozen', description: '(Cachaca, Lime, Zucchero di canna)', notes: [], price: '8 €' },
-      { id: 'caipiroska', name: 'Caipiroska', subtitle: 'Pestati e Frozen', description: '(Vodka, Lime, Zucchero di canna)', notes: [], price: '8 €' },
-      { id: 'strawberry_caipiroska', name: 'Strawberry caipiroska', subtitle: 'Pestati e Frozen', description: '(Vodka, Lime, Zucchero di canna, Fragola)', notes: [], price: '8 €' },
-      { id: 'caipirissima', name: 'Caipirissima', subtitle: 'Pestati e Frozen', description: '(Rum, Lime, Zucchero di canna)', notes: [], price: '8 €' },
-      { id: 'caipiriteqa', name: 'Caipiriteqa', subtitle: 'Pestati e Frozen', description: '(Tequila, Lime, Zucchero di canna)', notes: [], price: '8 €' },
-      { id: 'mojito', name: 'Mojito', subtitle: 'Pestati e Frozen', description: '(Rum, Lime, Foglie di menta, Watersoda)', notes: [], price: '8 €' },
-      { id: 'frozen_slammer', name: 'Frozen slammer', subtitle: 'Pestati e Frozen', description: '(Southern comfort, Disaronno, Fragola, Sciroppo e frutta)', notes: [], price: '8 €' },
-      { id: 'frozen_daiquiri', name: 'Frozen daiquiri', subtitle: 'Pestati e Frozen', description: '(Rum, Fragola, Banana, Ananas, ecc, Sweet & Sour)', notes: [], price: '8 €' },
-      { id: 'frozen_margarita', name: 'Frozen margarita', subtitle: 'Pestati e Frozen', description: '(Tequila, Fragola, Banana, Ananas, ecc, Sweet & Sour)', notes: [], price: '8 €' },
-
-      // Soft drink (analcolici, 5 euro)
-      { id: 'virgin_colada', name: 'Virgin colada', subtitle: 'Soft drink', description: '(Latte di cocco o Pina colada mix, Succo d\'arancia)', notes: [], price: '5 €' },
-      { id: 'daiquiri_strawberry', name: 'Daiquiri Strawberry', subtitle: 'Soft drink', description: '(Sciroppo di fragola, Succo di lime o limone)', notes: [], price: '5 €' },
-      { id: 'florida', name: 'Florida', subtitle: 'Soft drink', description: '(Succo di pompelmo, Succo d\'arancia, Succo di lime o limone, Sciroppo di zucchero, Soda water)', notes: [], price: '5 €' },
-      { id: 'shirley_temple', name: 'Shirley Temple', subtitle: 'Soft drink', description: '(Ginger ale, Sciroppo di granatina)', notes: [], price: '5 €' },
-      { id: 'red_peach', name: 'Red peach', subtitle: 'Soft drink', description: '(Sciroppo di fragola, Succo di pesca, Succo d\'ananas)', notes: [], price: '5 €' },
-      { id: 'sweet_strawberry', name: 'Sweet strawberry', subtitle: 'Soft drink', description: '(Sciroppo di fragola, Succo d\'arancia, Top of Sprite)', notes: [], price: '5 €' }
+      { id: 'salmone_affumicato', name: 'Salmone affumicato', subtitle: '', description: '', notes: [], price: '10 €' },
+      { id: 'bresaola_manzo', name: 'Bresaola di manzo', subtitle: '', description: '', notes: [], price: '10 €' },
+      { id: 'prosciutto_crudo', name: 'Prosciutto crudo', subtitle: '', description: '', notes: [], price: '15 €' },
+      { id: 'crudo_iberico', name: 'Crudo iberico', subtitle: '', description: '', notes: [], price: '' },
+      { id: 'patatine_fritte', name: 'Patatine fritte', subtitle: '', description: '', notes: [], price: '5 €' },
+      { id: 'verdure_grigliate', name: 'Verdure grigliate', subtitle: '', description: '', notes: [], price: '8 €' },
+      { id: 'polpette', name: 'Polpette', subtitle: '', description: '', notes: [], price: '10 €' },
+      { id: 'pettoline', name: 'Pettoline', subtitle: '', description: '', notes: [], price: '6 €' },
+      { id: 'carpaccio_tonno_rosa', name: 'Carpaccio di Tonno Rosa', subtitle: '', description: '', notes: [], price: '15 €' }
     ]
   },
   {
-    id: 'vini',
-    title: 'Vini',
-    description: 'Una selezione ricercata di vini bianchi, rosati e rossi dalla Cantina Sampietrana e Verdeca.',
+    id: 'insalatone',
+    title: 'Insalatone',
+    description: 'Insalate fresche e nutrienti.',
     items: [
-      { id: 'tacco_barocco_bianco', name: 'Tacco Barocco - Negroamaro Bianco Primitivo', subtitle: 'Bianchi', description: 'Note di fiori bianchi e agrumi, fresco e persistente. Cantina Sampietrana. 750ml', notes: [], price: '5 € / 22 €' },
-      { id: 'verdeca_salento', name: 'Verdeca del Salento', subtitle: '', description: 'Vino autoctono dal bouquet delicato e sapore secco. Cantina Verdeca. 750ml', notes: [], price: '5 € / 18 €' },
-      { id: 'verdeca_itria', name: 'Verdeca Valle d\'Itria', subtitle: '', description: 'Fresco, fruttato e con una piacevole sapidità. Cantina Verdeca. 750ml', notes: [], price: '5 € / 18 €' },
-      { id: 'tacco_barocco_negroamaro', name: 'Tacco Barocco - Negroamaro', subtitle: 'Rossi', description: 'Rosso rubino intenso con sentori di piccoli frutti rossi. Cantina Sampietrana. 750ml', notes: [], price: '5 € / 22 €' },
-      { id: 'tacco_barocco_puglia_igp', name: 'Tacco Barocco - Puglia IGP', subtitle: '', description: 'Corposo ed equilibrato, perfetto per accompagnare taglieri. Cantina Sampietrana. 750ml', notes: [], price: '6 € - 24 €' },
-      { id: 'rosato_salento', name: 'Rosato del Salento', subtitle: 'Rosati', description: 'Fresco, fruttato, con note di ciliegia e lampone. 750ml', notes: [], price: '5 € / 18 €' },
-      { id: 'prosecco_doc', name: 'Prosecco D.O.C.', subtitle: 'Bollicine', description: 'Perlage fine e persistente, ideale come aperitivo. 750ml', notes: [], price: '4 € / 18 €' }
+      { id: 'insalatona_verde', name: 'Insalatona mista verde', subtitle: '', description: '', notes: [], price: '7 €' },
+      { id: 'insalatona_proteica', name: 'Insalatona proteica', subtitle: '', description: 'Straccetti di pollo, pomodoro, grana e rucola', notes: [], price: '14 €' },
+      { id: 'insalatona_gamberoni', name: 'Insalatona con Gamberoni', subtitle: '', description: '', notes: [], price: '15 €' },
+      { id: 'insalatona_mare', name: 'Insalatona di Mare', subtitle: '', description: '', notes: [], price: '15 €' }
     ]
   },
   {
-    id: 'amari',
-    title: 'Amari e Liquori',
-    description: 'Selezione di amari e liquori per chiudere in bellezza.',
+    id: 'primi-terra',
+    title: 'Primi di terra',
+    description: 'Paste fresche e gnocchi con i sapori della terra.',
     items: [
-      { id: 'montenegro', name: 'Montenegro', subtitle: '', description: '', notes: [], price: '4 €' },
-      { id: 'del_capo', name: 'Amaro del Capo', subtitle: '', description: '', notes: [], price: '4 €' },
-      { id: 'jagermeister', name: 'Jagermeister', subtitle: '', description: '', notes: [], price: '4 €' },
-      { id: 'unicum', name: 'Unicum', subtitle: '', description: '', notes: [], price: '4 €' },
-      { id: 'sambuca', name: 'Sambuca', subtitle: '', description: '', notes: [], price: '4 €' },
-      { id: 'kahlua', name: 'Kahlua', subtitle: '', description: '', notes: [], price: '4 €' },
-      { id: 'limoncello', name: 'Limoncello', subtitle: '', description: '', notes: [], price: '4 €' },
-      { id: 'cointreau', name: 'Cointreau', subtitle: '', description: '', notes: [], price: '4 €' },
-      { id: 'grand_marnier', name: 'Grand Marnier', subtitle: '', description: '', notes: [], price: '4 €' },
-      { id: 'pernod', name: 'Pernod', subtitle: '', description: '', notes: [], price: '4 €' },
-      { id: 'batida_de_coco', name: 'Batida de coco', subtitle: '', description: '', notes: [], price: '4 €' },
-      { id: 'midori', name: 'Midori', subtitle: '', description: '', notes: [], price: '4 €' },
-      { id: 'malibu', name: 'Malibù', subtitle: '', description: '', notes: [], price: '4 €' }
+      { id: 'tagliatelle_porcini', name: 'Tagliatelle ai funghi porcini', subtitle: '', description: '', notes: [], price: '18 €' },
+      { id: 'orecchiette_pomodoro', name: 'Orecchiette al pomodoro fresco', subtitle: '', description: '', notes: [], price: '12 €' },
+      { id: 'gnocchi_pomodoro', name: 'Gnocchi al pomodoro fresco', subtitle: '', description: '', notes: [], price: '12 €' },
+      { id: 'tagliolini_salsiccia', name: 'Tagliolini con crema di porro e salsiccia norcina', subtitle: '', description: '', notes: [], price: '16 €' },
+      { id: 'orecchiette_cime', name: 'Orecchiette con cime di rape', subtitle: '', description: 'Senatore Cappelli, acciughe del Cantabrico, stracciatella', notes: [], price: '15 €' }
     ]
   },
   {
-    id: 'superalcolici',
-    title: 'Superalcolici',
-    description: 'Una selezione di pregiati distillati e rum da meditazione.',
+    id: 'secondi-terra',
+    title: 'Secondi di terra',
+    description: 'Carni selezionate e preparazioni della tradizione.',
     items: [
-      { id: 'jack_daniels', name: "Jack Daniel's", subtitle: 'Whisky', description: '4cl', notes: [], price: '6 €' },
-      { id: 'johnnie_walker', name: 'Johnnie Walker', subtitle: 'Whisky', description: '4cl', notes: [], price: '6 €' },
-      { id: 'lagavulin', name: 'Lagavulin', subtitle: 'Whisky', description: '4cl', notes: [], price: '9 €' },
-      { id: 'absolut', name: 'Absolut', subtitle: 'Vodka', description: '', notes: [], price: '6 €' },
-      { id: 'moskovskaya', name: 'Moskovskaya', subtitle: 'Vodka', description: '', notes: [], price: '5 €' },
-      { id: 'stolichnaya', name: 'Stolichnaya', subtitle: 'Vodka', description: '', notes: [], price: '6 €' },
-      { id: 'ciroc', name: 'Cîroc', subtitle: 'Vodka', description: '', notes: [], price: '6 €' },
-      { id: 'aniversario', name: 'Pampero Aniversario', subtitle: 'Rum', description: '', notes: [], price: '6 €' },
-      { id: 'havana_3', name: 'Havana Club 3', subtitle: 'Rum', description: '', notes: [], price: '6 €' },
-      { id: 'havana_7', name: 'Havana Club 7', subtitle: 'Rum', description: '', notes: [], price: '6 €' },
-      { id: 'zacapa', name: 'Zacapa', subtitle: 'Rum', description: '', notes: [], price: '6 €' },
-      { id: 'kraken', name: 'Kraken', subtitle: 'Rum', description: '', notes: [], price: '6 €' },
-      { id: 'tanqueray', name: 'Tanqueray', subtitle: 'Gin', description: '', notes: [], price: '6 €' },
-      { id: 'bombay', name: 'Bombay Sapphire', subtitle: 'Gin', description: '', notes: [], price: '6 €' },
-      { id: 'gin_mare', name: 'Gin Mare', subtitle: 'Gin', description: '', notes: [], price: '9 €' },
-      { id: 'hendricks', name: "Hendrick's", subtitle: 'Gin', description: '', notes: [], price: '9 €' },
-      { id: 'malfy_originale', name: 'Malfy Originale', subtitle: 'Gin', description: '', notes: [], price: '7 €' },
-      { id: 'malfy_pompelmo', name: 'Malfy Pompelmo', subtitle: 'Gin', description: '', notes: [], price: '7 €' },
-      { id: 'malfy_arancia', name: 'Malfy Arancia', subtitle: 'Gin', description: '', notes: [], price: '7 €' },
-      { id: 'cubical', name: 'Cubical', subtitle: 'Gin', description: '', notes: [], price: '8 €' },
-      { id: 'citadelle', name: 'Gin Citadelle', subtitle: 'Gin', description: '', notes: [], price: '7 €' },
-      { id: 'roku', name: 'Roku', subtitle: 'Gin', description: '', notes: [], price: '7 €' },
-      { id: 'nordes', name: 'Nordés', subtitle: 'Gin', description: '', notes: [], price: '7 €' },
-      { id: 'jose_cuervo', name: 'Jose Cuervo', subtitle: 'Tequila', description: '', notes: [], price: '5 €' },
-      { id: 'fortaleza', name: 'Fortaleza', subtitle: 'Tequila', description: '', notes: [], price: '9 €' },
-      { id: 'grappa_bianca', name: 'Grappa Bianca', subtitle: 'Grappe & Cognac', description: '', notes: [], price: '6 €' },
-      { id: 'grappa_barricata', name: 'Grappa Barricata Amarone della Valpolicella', subtitle: 'Grappe & Cognac', description: '', notes: [], price: '9 €' },
-      { id: 'vecchia_romagna', name: 'Vecchia Romagna', subtitle: 'Grappe & Cognac', description: '', notes: [], price: '5 €' },
-      { id: 'martell', name: 'Martell', subtitle: 'Grappe & Cognac', description: '', notes: [], price: '8 €' },
-      { id: 'armagnac', name: 'Armagnac', subtitle: 'Grappe & Cognac', description: 'In arrivo', notes: [], price: '-' },
-      { id: 'shot_2cl', name: 'Shot con Distillati Base (2 cl)', subtitle: 'Shot', description: '', notes: [], price: '3 €' },
-      { id: 'shot_4cl', name: 'Shot con Distillati Base (4 cl)', subtitle: 'Shot', description: '', notes: [], price: '5 €' }
+      { id: 'filetto_tartufo', name: 'Filetto di manzo in crema di tartufo o porcini', subtitle: 'Con contorno', description: '', notes: [], price: '24 €' },
+      { id: 'entrecote_scottona', name: 'Entrec\u00f4te di Scottona', subtitle: 'Con contorno, circa 250g', description: '', notes: [], price: '24 €' },
+      { id: 'tagliata_pollo', name: 'Tagliata di pollo con grana, rucola e pomodoro', subtitle: '', description: '', notes: [], price: '18 €' },
+      { id: 'costine_messicana', name: 'Costine alla messicana', subtitle: '', description: '', notes: [], price: '22 €' },
+      { id: 'tartare_manzo', name: 'Tartare di manzo', subtitle: '', description: '', notes: [], price: '18 €' },
+      { id: 'carpaccio_manzo', name: 'Carpaccio di Manzo', subtitle: '', description: '', notes: [], price: '14 €' }
+    ]
+  },
+  {
+    id: 'primi-mare',
+    title: 'Primi di mare',
+    description: 'Paste fresche con i frutti del mare.',
+    items: [
+      { id: 'tagliatelle_seppia', name: 'Tagliatelle con seppia', subtitle: '', description: '', notes: [], price: '19 €' },
+      { id: 'tagliolini_gambero', name: 'Tagliolini aglio olio e tartare di gambero gobbetto', subtitle: '', description: '', notes: [], price: '16 €' },
+      { id: 'tortelloni_astice', name: 'Tortelloni all\u2019astice e granchio reale con crema di crostacei', subtitle: '', description: '', notes: [], price: '21 €' },
+      { id: 'spaghetti_ostriche', name: 'Spaghetti alle ostriche', subtitle: '', description: '', notes: [], price: '20 €' },
+      { id: 'gnocchi_cozze', name: 'Gnocchi alle cozze', subtitle: '', description: '', notes: [], price: '15 €' },
+      { id: 'panino_polpo', name: 'Panino con tentacolo di polpo', subtitle: '', description: '', notes: [], price: '12 €' },
+      { id: 'tagliolini_astice', name: 'Tagliolini con 1/2 astice al pomodoro fresco', subtitle: '', description: '', notes: [], price: '28 €' },
+      { id: 'pasta_vongole', name: 'Pasta e vongole', subtitle: '', description: '', notes: [], price: '18 €' }
+    ]
+  },
+  {
+    id: 'secondi-mare',
+    title: 'Secondi di mare',
+    description: 'Pesce e frutti di mare freschi, preparati con cura.',
+    items: [
+      { id: 'gamberoni_griglia', name: 'Gamberoni alla griglia', subtitle: 'Con contorno', description: '', notes: [], price: '17 €' },
+      { id: 'filetto_pesce_spada', name: 'Filetto di pesce spada', subtitle: 'Con contorno', description: '', notes: [], price: '16 €' },
+      { id: 'frittura_mista', name: 'Frittura mista', subtitle: '', description: '', notes: [], price: '18 €' },
+      { id: 'tartare_tonno', name: 'Tartare di tonno', subtitle: 'Con contorno', description: '', notes: [], price: '18 €' },
+      { id: 'polpo_burratina', name: 'Tentacolo di polpo su burratina affumicata e crema di piselli verdi', subtitle: '', description: '', notes: [], price: '18 €' },
+      { id: 'scottata_tonno', name: 'Scottata di Tonno', subtitle: '', description: '', notes: [], price: '21 €' }
+    ]
+  },
+  {
+    id: 'dolci',
+    title: 'Dolci',
+    description: 'Dessert artigianali per concludere in dolcezza.',
+    items: [
+      { id: 'cremoso_caffe', name: 'Cremoso al caff\u00e8', subtitle: '', description: '', notes: [], price: '6 €' },
+      { id: 'cremoso_frutti_bosco', name: 'Cremoso ai frutti di bosco', subtitle: '', description: '', notes: [], price: '6 €' },
+      { id: 'cremoso_pistacchio', name: 'Cremoso al pistacchio', subtitle: '', description: '', notes: [], price: '6 €' }
     ]
   },
   {
     id: 'bevande',
     title: 'Bevande',
-    description: 'Analcolici, soft drink e alternative leggere.',
+    description: 'Analcolici e soft drink.',
     items: [
-      { id: 'centrifuga', name: 'Centrifuga', subtitle: '', description: 'In base alla stagione', notes: [], price: '5 €' },
-      { id: 'acqua', name: 'Acqua Naturale / Frizzante', subtitle: '', description: '', notes: [], price: '2,50 €' },
-      { id: 'coca_cola', name: 'Coca-Cola / Coca-Cola Zero', subtitle: '', description: '', notes: [], price: '3 €' },
-      { id: 'fanta', name: 'Fanta', subtitle: '', description: '', notes: [], price: '3 €' },
-      { id: 'succhi', name: 'Succhi di Frutta', subtitle: '', description: '', notes: [], price: '3,50 €' },
+      { id: 'acqua', name: 'Acqua naturale / frizzante', subtitle: '50 cl', description: '', notes: [], price: '2,5 €' },
+      { id: 'calice_vino', name: 'Calice di vino', subtitle: '', description: '', notes: [], price: '4 €' },
+      { id: 'calice_prosecco', name: 'Calice di prosecco', subtitle: '', description: '', notes: [], price: '4 €' },
+      { id: 'calice_franciacorta', name: 'Calice franciacorta', subtitle: '', description: '', notes: [], price: '7 €' },
+      { id: 'calice_champagne', name: 'Calice champagne', subtitle: '', description: '', notes: [], price: '10 €' },
+      { id: 'coca_cola', name: 'Coca Cola / Coca Cola Zero / Fanta', subtitle: '', description: '', notes: [], price: '3 €' },
+      { id: 'succhi_frutta', name: 'Succhi di frutta', subtitle: '', description: '', notes: [], price: '3,5 €' },
       { id: 'chinotto', name: 'Chinotto', subtitle: '', description: '', notes: [], price: '3 €' },
-      { id: 'schweppes_lemon', name: 'Schweppes Lemon', subtitle: '', description: '', notes: [], price: '3 €' },
-      { id: 'te', name: 'Tè Pesca / Limone', subtitle: '', description: '', notes: [], price: '3 €' },
-      { id: 'san_bitter', name: 'San Bitter Bianco / Rosso', subtitle: '', description: '', notes: [], price: '3 €' },
-      { id: 'cocktail_sp', name: 'Cocktail San Pellegrino', subtitle: '', description: '', notes: [], price: '3 €' },
+      { id: 'schweppes_lemon', name: 'Schweppes lemon', subtitle: '', description: '', notes: [], price: '3 €' },
+      { id: 'the_pesca_limone', name: 'The alla pesca / limone', subtitle: '', description: '', notes: [], price: '3 €' },
+      { id: 'san_bitter', name: 'San Bitter bianco / rosso', subtitle: '', description: '', notes: [], price: '3 €' },
+      { id: 'cocktail_san_pellegrino', name: 'Cocktail San Pellegrino', subtitle: '', description: '', notes: [], price: '3 €' },
       { id: 'crodino', name: 'Crodino', subtitle: '', description: '', notes: [], price: '3 €' },
-      { id: 'tonica', name: 'Acqua Tonica', subtitle: '', description: '', notes: [], price: '3 €' },
+      { id: 'acqua_tonica', name: 'Acqua tonica', subtitle: '', description: '', notes: [], price: '3 €' },
       { id: 'red_bull', name: 'Red Bull', subtitle: '', description: '', notes: [], price: '4 €' }
+    ]
+  },
+  {
+    id: 'gin',
+    title: 'Gin',
+    description: 'Selezione di gin premium da tutto il mondo.',
+    items: [
+      { id: 'tanqueray_london', name: 'Tanqueray London Dry', subtitle: 'vol 43', description: '', notes: [], price: '6 €' },
+      { id: 'tanqueray_sevilla', name: 'Tanqueray Sevilla', subtitle: 'vol 41,3', description: '', notes: [], price: '7 €' },
+      { id: 'tanqueray_nten', name: 'Tanqueray N\u00b0Ten', subtitle: 'vol 47,3', description: '', notes: [], price: '8 €' },
+      { id: 'ki_no_tou', name: 'Ki No Tou Kioto', subtitle: 'vol 47,4', description: '', notes: [], price: '12 €' },
+      { id: 'bagur', name: 'Bagur', subtitle: 'vol 43', description: '', notes: [], price: '8 €' },
+      { id: 'amuerte_coca', name: 'Amuerte Coca Gin', subtitle: 'vol 43', description: '', notes: [], price: '12 €' },
+      { id: 'etsu_gin', name: 'Etsu Gin', subtitle: 'vol 43,3', description: '', notes: [], price: '8 €' },
+      { id: 'roku_gin', name: 'Roku Gin', subtitle: 'vol 43', description: '', notes: [], price: '6 €' },
+      { id: 'cubical_gin', name: 'Cubical Gin', subtitle: 'vol 40', description: '', notes: [], price: '7 €' },
+      { id: 'bobbys', name: "Bobby's", subtitle: 'vol 42', description: '', notes: [], price: '8 €' },
+      { id: 'nordes_gin', name: 'Nord\u00e9s Gin', subtitle: 'vol 40', description: '', notes: [], price: '8 €' },
+      { id: 'black_tomato', name: 'Black Tomato', subtitle: 'vol 42', description: '', notes: [], price: '8 €' },
+      { id: 'hendrix', name: "Hendrick's", subtitle: 'vol 44', description: '', notes: [], price: '7 €' },
+      { id: 'hendrix_neptunia', name: "Hendrick's Neptunia", subtitle: 'vol 43,4', description: '', notes: [], price: '8 €' },
+      { id: 'tassoni_gin', name: 'Tassoni Gin', subtitle: 'vol 41,5', description: '', notes: [], price: '7 €' },
+      { id: 'gin_mare', name: 'Gin Mare', subtitle: 'vol 42,7', description: '', notes: [], price: '8 €' },
+      { id: 'malfi_rosa', name: 'Malfi Rosa', subtitle: 'vol 41', description: '', notes: [], price: '7 €' },
+      { id: 'malfi', name: 'Malfi', subtitle: 'vol 41', description: '', notes: [], price: '7 €' },
+      { id: 'irish_gin', name: 'Irish Gin', subtitle: 'vol 43', description: '', notes: [], price: '8 €' },
+      { id: 'professore', name: 'Professore', subtitle: 'vol 45', description: '', notes: [], price: '8 €' },
+      { id: 'cittadinelle', name: 'Cittadinelle', subtitle: 'vol 44', description: '', notes: [], price: '7 €' },
+      { id: 'ambrosia_dry', name: 'Ambrosia Dry', subtitle: 'vol 40', description: '', notes: [], price: '7 €' },
+      { id: 'ambrosia_sicily', name: 'Ambrosia Sicily Edition', subtitle: 'vol 40', description: '', notes: [], price: '7 €' },
+      { id: 'bulldog_gin', name: 'Bulldog Gin', subtitle: 'vol 40', description: '', notes: [], price: '7 €' },
+      { id: 'adamvs', name: 'Adamvs', subtitle: 'vol 44', description: '', notes: [], price: '8 €' },
+      { id: 'dolce_vita_gin', name: 'Dolce Vita', subtitle: 'vol 40', description: '', notes: [], price: '8 €' },
+      { id: 'bombay', name: 'Bombay', subtitle: 'vol 40', description: '', notes: [], price: '7 €' }
+    ]
+  },
+  {
+    id: 'cocktails',
+    title: 'Cocktails',
+    description: 'I classici e le nostre proposte della casa.',
+    items: [
+      { id: 'aperol_spritz', name: 'Aperol Spritz', subtitle: '', description: '', notes: [], price: '5 €' },
+      { id: 'campari_spritz', name: 'Campari Spritz', subtitle: '', description: '', notes: [], price: '6 €' },
+      { id: 'campari_prosecco', name: 'Campari e Prosecco', subtitle: '', description: '', notes: [], price: '6 €' },
+      { id: 'caipirinha', name: 'Caipirinha', subtitle: '', description: '', notes: [], price: '7 €' },
+      { id: 'caipiroska', name: 'Caipiroska', subtitle: '', description: '', notes: [], price: '7 €' },
+      { id: 'gin_tonic', name: 'Gin Tonic', subtitle: '', description: '', notes: [], price: '6 €' },
+      { id: 'hugo', name: 'Hugo', subtitle: '', description: '', notes: [], price: '7 €' },
+      { id: 'moscow_mule', name: 'Moscow Mule', subtitle: '', description: '', notes: [], price: '7 €' },
+      { id: 'london_mule', name: 'London Mule', subtitle: '', description: '', notes: [], price: '7 €' },
+      { id: 'long_island', name: 'Long Island Ice Tea', subtitle: '', description: '', notes: [], price: '8 €' },
+      { id: 'japan_ice_tea', name: 'Japan Ice Tea', subtitle: '', description: '', notes: [], price: '7 €' },
+      { id: 'mojito_scuro', name: 'Mojito Scuro', subtitle: '', description: '', notes: [], price: '7 €' },
+      { id: 'negroni', name: 'Negroni', subtitle: '', description: '', notes: [], price: '7 €' },
+      { id: 'negroni_sbagliato', name: 'Negroni Sbagliato', subtitle: '', description: '', notes: [], price: '7 €' },
+      { id: 'sex_on_the_beach', name: 'Sex on the Beach', subtitle: '', description: '', notes: [], price: '8 €' },
+      { id: 'margherita', name: 'Margherita', subtitle: '', description: '', notes: [], price: '7 €' },
+      { id: 'cocktail_martini', name: 'Cocktail Martini', subtitle: '', description: '', notes: [], price: '7 €' },
+      { id: 'espresso_martini', name: 'Espresso Martini', subtitle: '', description: '', notes: [], price: '7 €' },
+      { id: 'cosmopolitan', name: 'Cosmopolitan', subtitle: '', description: '', notes: [], price: '8 €' },
+      { id: 'quattro_bianchi', name: 'Quattro Bianchi', subtitle: 'Alla fragola o al limone', description: '', notes: [], price: '10 €' }
+    ]
+  },
+  {
+    id: 'amari',
+    title: 'Amari',
+    description: 'Selezione di amari italiani per concludere la serata.',
+    items: [
+      { id: 'ramazzotti', name: 'Ramazzotti', subtitle: '', description: '', notes: [], price: '4 €' },
+      { id: 'cynar', name: 'Cynar', subtitle: '', description: '', notes: [], price: '4 €' },
+      { id: 'montenegro', name: 'Montenegro', subtitle: '', description: '', notes: [], price: '4 €' },
+      { id: 'fernet_branca', name: 'Fernet Branca / Menta', subtitle: '', description: '', notes: [], price: '4 €' },
+      { id: 'averna', name: 'Averna', subtitle: '', description: '', notes: [], price: '4 €' },
+      { id: 'petrus', name: 'Petrus', subtitle: '', description: '', notes: [], price: '4 €' },
+      { id: 'jagermeister', name: 'Jagermeister', subtitle: '', description: '', notes: [], price: '4 €' },
+      { id: 'jefferson', name: 'Jefferson', subtitle: '', description: '', notes: [], price: '4 €' },
+      { id: 'unicum', name: 'Unicum', subtitle: '', description: '', notes: [], price: '4 €' },
+      { id: 'lucano', name: 'Lucano', subtitle: '', description: '', notes: [], price: '4 €' },
+      { id: 'amaro_del_capo', name: 'Amaro del Capo', subtitle: '', description: '', notes: [], price: '4 €' },
+      { id: 'sambuca', name: 'Sambuca', subtitle: '', description: '', notes: [], price: '4 €' },
+      { id: 'caffe_borghetti', name: 'Caff\u00e8 Borghetti', subtitle: '', description: '', notes: [], price: '4 €' },
+      { id: 'vena_caffe', name: 'Vena Caff\u00e8', subtitle: '', description: '', notes: [], price: '4 €' }
+    ]
+  },
+  {
+    id: 'distillati',
+    title: 'Distillati',
+    description: 'Whisky, Rum e altri pregiati distillati.',
+    items: [
+      { id: 'vecchia_romagna', name: 'Vecchia Romagna', subtitle: '', description: '', notes: [], price: '5 €' },
+      { id: 'cointreau', name: 'Cointreau', subtitle: '', description: '', notes: [], price: '5 €' },
+      { id: 'jack_daniels', name: "Jack Daniel's", subtitle: '', description: '', notes: [], price: '6 €' },
+      { id: 'jack_daniels_honey', name: "Jack Daniel's Honey", subtitle: '', description: '', notes: [], price: '6 €' },
+      { id: 'oban', name: 'Oban', subtitle: '', description: '', notes: [], price: '9 €' },
+      { id: 'laphroaig', name: 'Laphroaig', subtitle: '', description: '', notes: [], price: '12 €' },
+      { id: 'lagavulin', name: 'Lagavulin', subtitle: '', description: '', notes: [], price: '12 €' },
+      { id: 'sambuca_dist', name: 'Sambuca', subtitle: '', description: '', notes: [], price: '5 €' },
+      { id: 'martini', name: 'Martini Bianco / Rosso / Dry', subtitle: '', description: '', notes: [], price: '5 €' },
+      { id: 'bacardi', name: 'Bacardi', subtitle: 'Rum', description: '', notes: [], price: '5 €' },
+      { id: 'don_papa', name: 'Don Papa', subtitle: 'Rum', description: '', notes: [], price: '8 €' },
+      { id: 'zacapa_23', name: 'Zacapa 23', subtitle: 'Rum', description: '', notes: [], price: '12 €' },
+      { id: 'shot_2cl', name: 'Shot con distillati base', subtitle: '2 cl', description: '', notes: [], price: '3 €' }
+    ]
+  },
+  {
+    id: 'vini-bianchi',
+    title: 'Vini bianchi',
+    description: 'Selezione di vini bianchi pugliesi e nazionali.',
+    items: [
+      { id: 'calavento_igp', name: 'Calavento IGP Salento', subtitle: '', description: '', notes: [], price: '21 €' },
+      { id: 'luna_igp', name: 'Luna IGP Salento', subtitle: '', description: '', notes: [], price: '21 €' },
+      { id: 'leverano_bianco', name: 'Leverano Vecchia Torre', subtitle: '', description: '', notes: [], price: '16 €' },
+      { id: 'muller_thurgau', name: 'Muller Thurgau', subtitle: '', description: '', notes: [], price: '21 €' },
+      { id: 'gewurztraminer', name: 'Gewurztraminer', subtitle: '', description: '', notes: [], price: '21 €' },
+      { id: 'falanghina', name: 'Falanghina', subtitle: '', description: '', notes: [], price: '16 €' },
+      { id: 'trebbiano_abbruzzo', name: "Trebbiano d'Abruzzo", subtitle: '', description: '', notes: [], price: '16 €' },
+      { id: 'fiano', name: 'Fiano', subtitle: '', description: '', notes: [], price: '18 €' },
+      { id: 'verdeca_due_trulli', name: 'Verdeca Due Trulli', subtitle: '', description: '', notes: [], price: '18 €' },
+      { id: 'chardonnay', name: 'Chardonnay', subtitle: '', description: '', notes: [], price: '18 €' }
+    ]
+  },
+  {
+    id: 'vini-rosati',
+    title: 'Vini rosati',
+    description: 'Rosati freschi e fruttati della tradizione pugliese.',
+    items: [
+      { id: 'leverano_rosato', name: 'Leverano DOP Vecchia Torre', subtitle: '', description: '', notes: [], price: '16 €' },
+      { id: 'negroamaro_rosato', name: 'Negroamaro Vecchia Torre', subtitle: '', description: '', notes: [], price: '18 €' },
+      { id: 'primitivo_rosato_1932', name: 'Primitivo Rosato 1932', subtitle: '', description: '', notes: [], price: '19 €' },
+      { id: 'no_negroamaro', name: 'N-O Negroamaro Susumaniello', subtitle: '', description: '', notes: [], price: '21 €' },
+      { id: 'susumaniello_rosato', name: 'Susumaniello Due Trulli', subtitle: '', description: '', notes: [], price: '21 €' }
+    ]
+  },
+  {
+    id: 'vini-rossi',
+    title: 'Vini rossi',
+    description: 'Rossi corposi e strutturati, pugliesi e nazionali.',
+    items: [
+      { id: 'primitivo_vt', name: 'Primitivo Vecchia Torre', subtitle: '', description: '', notes: [], price: '16 €' },
+      { id: 'primitivo_dt', name: 'Primitivo Due Trulli', subtitle: '', description: '', notes: [], price: '18 €' },
+      { id: 'primitivo_vigniaioli', name: 'Primitivo Vigniaioli 68 IGP', subtitle: '', description: '', notes: [], price: '28 €' },
+      { id: 'primitivo_manduria', name: 'Primitivo di Manduria 1932', subtitle: '', description: '', notes: [], price: '21 €' },
+      { id: 'negroamaro_vt', name: 'Negroamaro Vecchia Torre', subtitle: '', description: '', notes: [], price: '16 €' },
+      { id: 'negroamaro_dt', name: 'Negroamaro Due Trulli', subtitle: '', description: '', notes: [], price: '18 €' },
+      { id: 'negroamaro_manorossa', name: 'Negroamaro Manorossa', subtitle: '', description: '', notes: [], price: '60 €' },
+      { id: 'negroamaro_susumaniello', name: 'Negroamaro-Susumaniello', subtitle: '', description: '', notes: [], price: '34 €' },
+      { id: 'susumaniello_vigna14', name: 'Susumaniello Vigna 14 IGP', subtitle: '', description: '', notes: [], price: '18 €' },
+      { id: 'nerotavola_sicilia', name: 'Nerotavola Sicilia DOC', subtitle: '', description: '', notes: [], price: '28 €' },
+      { id: 'nero_di_troia', name: 'Nero di Troia', subtitle: '', description: '', notes: [], price: '16 €' },
+      { id: 'aglianico', name: 'Aglianico', subtitle: '', description: '', notes: [], price: '18 €' },
+      { id: 'cabernet_veneto', name: 'Cabernet Veneto', subtitle: '', description: '', notes: [], price: '21 €' },
+      { id: 'ripasso_negrar', name: 'Ripasso Negrar', subtitle: '', description: '', notes: [], price: '26 €' },
+      { id: 'chianti_classico', name: 'Chianti Classico', subtitle: '', description: '', notes: [], price: '20 €' },
+      { id: 'brunello', name: 'Brunello', subtitle: '', description: '', notes: [], price: '40 €' },
+      { id: 'amarone', name: 'Amarone', subtitle: '', description: '', notes: [], price: '40 €' }
+    ]
+  },
+  {
+    id: 'vini-bio',
+    title: 'Vini bio',
+    description: 'Selezione di vini biologici bianchi, rosati e rossi.',
+    items: [
+      { id: 'trebbiano_bio', name: "Trebbiano d'Abruzzo bio vegano", subtitle: 'Bianco', description: '', notes: [], price: '19 €' },
+      { id: 'passerina_bio', name: 'Passerina bio vegano', subtitle: 'Bianco', description: '', notes: [], price: '19 €' },
+      { id: 'pecorino_bio', name: 'Pecorino bio', subtitle: 'Bianco', description: '', notes: [], price: '19 €' },
+      { id: 'castel_monte_bio_bianco', name: 'Castel del Monte bio', subtitle: 'Bianco', description: '', notes: [], price: '19 €' },
+      { id: 'vitalba_bio', name: 'Vitalba bio', subtitle: 'Bianco', description: '', notes: [], price: '19 €' },
+      { id: 'dharma_bio', name: 'Dharma bio', subtitle: 'Bianco', description: '', notes: [], price: '19 €' },
+      { id: 'novebolle_doc', name: 'Novebolle D.O.C.', subtitle: 'Spumante', description: '', notes: [], price: '19 €' },
+      { id: 'castel_monte_bio_rosato', name: 'Castel del Monte bio', subtitle: 'Rosato', description: '', notes: [], price: '19 €' },
+      { id: 'castel_monte_bio_rosso', name: 'Castel del Monte bio', subtitle: 'Rosso', description: '', notes: [], price: '19 €' }
+    ]
+  },
+  {
+    id: 'prosecco',
+    title: 'Prosecco e Champagne',
+    description: 'Bollicine per ogni occasione.',
+    items: [
+      { id: 'monticano', name: 'Monticano', subtitle: 'Prosecco', description: '', notes: [], price: '21 €' },
+      { id: 'fragolino', name: 'Fragolino', subtitle: 'Prosecco', description: '', notes: [], price: '18 €' },
+      { id: 'asti', name: 'Asti', subtitle: 'Prosecco', description: '', notes: [], price: '15 €' },
+      { id: 'franciacorta', name: 'Franciacorta', subtitle: 'Spumante', description: '', notes: [], price: '48 €' },
+      { id: 'moet_chandon', name: 'Mo\u00ebt & Chandon', subtitle: 'Champagne', description: '', notes: [], price: '70 €' },
+      { id: 'veuve_clicquot', name: 'Veuve Clicquot', subtitle: 'Champagne', description: '', notes: [], price: '65 €' }
     ]
   }
 ];
 
 function App() {
   const { t } = useTranslation();
-  const [apiStatus, setApiStatus] = useState({ status: 'LOADING' });
   const [menuSections, setMenuSections] = useState(fallbackMenuSections);
   const [isUsingFallback, setIsUsingFallback] = useState(false);
 
@@ -265,16 +355,12 @@ function App() {
 
     async function loadHomeData() {
       try {
-        const [status, sections] = await Promise.all([
-          fetchApiStatus(),
-          fetchMenuSections()
-        ]);
+        const sections = await fetchMenuSections();
 
         if (!isMounted) {
           return;
         }
 
-        setApiStatus(status);
         setMenuSections(sections);
         setIsUsingFallback(false);
       } catch {
@@ -282,7 +368,6 @@ function App() {
           return;
         }
 
-        setApiStatus({ status: 'DOWN' });
         setMenuSections(fallbackMenuSections);
         setIsUsingFallback(true);
       }
@@ -297,7 +382,7 @@ function App() {
 
   return (
     <main>
-      <Hero status={apiStatus} />
+      <Hero />
 
       <section className="section section--menu" id="menu" aria-labelledby="menu-title">
         <div className="section__heading">
@@ -311,7 +396,7 @@ function App() {
         {/* Minimal Category Navigation */}
         <div className={`category-nav-wrapper ${showLeftIndicator ? 'has-left-scroll' : ''} ${showRightIndicator ? 'has-right-scroll' : ''}`}>
           <div className="scroll-hint scroll-hint--left" aria-hidden="true">
-            <span>‹</span>
+            <span>&#8249;</span>
           </div>
           <nav className="category-nav" ref={navRef}>
             {menuSections.map((section) => (
@@ -325,7 +410,7 @@ function App() {
             ))}
           </nav>
           <div className="scroll-hint scroll-hint--right" aria-hidden="true">
-            <span>›</span>
+            <span>&#8250;</span>
           </div>
         </div>
 
@@ -343,13 +428,6 @@ function App() {
               </div>
 
               <div className="menu-list-editorial">
-                {section.id === 'vini' && (
-                  <div className="menu-item-editorial__header" style={{ justifyContent: 'flex-end', marginBottom: '-10px', opacity: 0.6 }}>
-                    <span className="menu-item-editorial__price" style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      {t(`menu.sections.${section.id}.price_header`)}
-                    </span>
-                  </div>
-                )}
                 {section.items.map((item) => (
                   <MenuItemCard key={`${section.id}-${item.name}`} item={item} />
                 ))}

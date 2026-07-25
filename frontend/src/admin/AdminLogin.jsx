@@ -28,7 +28,7 @@ export function AdminLogin({ onAuthenticated }) {
   return (
     <main className="admin-shell admin-shell--centered">
       <form className="admin-login" onSubmit={handleSubmit}>
-        <p className="admin-eyebrow">L&apos;Angolo diVino</p>
+        <p className="admin-eyebrow">Il Bistr&ograve; dei Dotti</p>
         <h1 className="admin-login__title">Gestione prezzi</h1>
         <p className="admin-login__hint">Area riservata al proprietario.</p>
 

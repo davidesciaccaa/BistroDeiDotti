@@ -1,433 +1,109 @@
 {
   "nav": {
-    "menu": "Menü",
-    "aperitivo": "Aperitif",
-    "drink": "Cocktails",
+    "menu": "Speisekarte",
+    "antipasti": "Vorspeisen",
+    "sfizi": "Häppchen",
+    "insalatone": "Salate",
+    "primi_terra": "Pasta (Land)",
+    "primi_mare": "Pasta (Meer)",
+    "secondi_terra": "Hauptgerichte (Land)",
+    "secondi_mare": "Hauptgerichte (Meer)",
+    "dolci": "Desserts",
+    "bevande": "Getränke",
+    "gin": "Gin",
+    "cocktails": "Cocktails",
+    "amari": "Digestifs",
+    "distillati": "Spirituosen",
     "vini": "Weine",
-    "amari": "Magenbitter & Liköre",
-    "superalcolici": "Spirituosen",
-    "bevande": "Softdrinks",
     "contatti": "Kontakt"
-    },
-    "hero": {
-    "eyebrow": "Cocktailbar & ausgewählte Weine",
-    "copy": "Einladende Drinks, edle Weine und kleine Häppchen für Abende, die ohne Eile beginnen.",
-    "button": "Menü entdecken"
-    },
-    "menu": {
-    "title": "Eine exklusive Auswahl.",
-    "fallback_note": "Backend nicht erreichbar: Lokales Menü wird angezeigt.",
+  },
+  "hero": {
+    "eyebrow": "Restaurant — Land- und Meeresküche",
+    "copy": "Raffinierte Gerichte, ausgewählte Weine und eine warme, elegante Atmosphäre für unvergessliche Abende.",
+    "button": "Speisekarte entdecken"
+  },
+  "menu": {
+    "title": "Unsere Auswahl.",
+    "fallback_note": "Backend nicht erreichbar: lokale Speisekarte wird angezeigt.",
     "sections": {
-      "aperitivo": {
-        "title": "Aperitif",
-        "description": "Kleine Häppchen, um den Abend entspannt zu beginnen."
+      "antipasti": {
+        "title": "Vorspeisen",
+        "description": "Eine Auswahl frischer Vorspeisen aus Land und Meer."
       },
-      "drink": {
-        "title": "Cocktails",
-        "description": "Große Klassiker und unsere eigenen Mix-Kreationen."
+      "sfizi": {
+        "title": "Häppchen",
+        "description": "Kleine Köstlichkeiten zum Teilen."
       },
-      "vini": {
-        "title": "Weine",
-        "description": "Eine erlesene Auswahl an Weiß-, Rosé- und Rotweinen der Weingüter Sampietrana und Verdeca.",
-        "price_header": "Glas / Flasche"
+      "insalatone": {
+        "title": "Salate",
+        "description": "Frische und nahrhafte Salate."
       },
-      "amari": {
-        "title": "Magenbitter & Liköre",
-        "description": "Auswahl an Bitterlikören für den perfekten Abschluss."
+      "primi-terra": {
+        "title": "Pasta (Land)",
+        "description": "Frische Pasta und Gnocchi mit den Aromen des Landes."
       },
-      "superalcolici": {
-        "title": "Spirituosen",
-        "description": "Eine Auswahl an edlen Destillaten und Rum zum Genießen."
+      "secondi-terra": {
+        "title": "Hauptgerichte (Land)",
+        "description": "Ausgewählte Fleischgerichte und traditionelle Zubereitungen."
+      },
+      "primi-mare": {
+        "title": "Pasta (Meer)",
+        "description": "Frische Pasta mit den besten Meeresfrüchten."
+      },
+      "secondi-mare": {
+        "title": "Hauptgerichte (Meer)",
+        "description": "Frische Fische und Meeresfrüchte, sorgfältig zubereitet."
+      },
+      "dolci": {
+        "title": "Desserts",
+        "description": "Handgemachte Desserts für ein süßes Ende."
       },
       "bevande": {
-        "title": "Softdrinks",
-        "description": "Alkoholfreie Getränke, Mocktails und leichte Alternativen."
-      }
-    },
-    "items": {
-      "ostriche": {
-        "name": "Austern",
-        "subtitle": "Meeresdelikatesse",
-        "description": "Frische Austern serviert mit Zitrone und schwarzem Pfeffer."
+        "title": "Getränke",
+        "description": "Alkoholfreie Getränke und Softdrinks."
       },
-      "tagliere": {
-        "name": "Platte",
-        "description": "Auswahl an lokalem Aufschnitt und Käse."
+      "gin": {
+        "title": "Gin",
+        "description": "Premium-Gin-Auswahl aus aller Welt."
       },
-      "fritti": {
-        "name": "Frittierter Mix",
-        "description": "Auswahl an handwerklich hergestellten frittierten Häppchen."
+      "cocktails": {
+        "title": "Cocktails",
+        "description": "Klassiker und unsere Hauskreationen."
       },
-      "tris": {
-        "name": "Trio",
-        "subtitle": "Lokale Kostproben",
-        "description": "Eine kleine Auswahl an täglichen Häppchen."
+      "amari": {
+        "title": "Digestifs",
+        "description": "Eine Auswahl italienischer Digestifs zum Abschluss des Abends."
       },
-      "americano": { "name": "Americano", "description": "(roter Wermut, Campari, Soda)" },
-      "bellini": { "name": "Bellini", "description": "(Prosecco, Pfirsichsaft)" },
-      "garibaldi": { "name": "Garibaldi", "description": "(Campari, Orangensaft)" },
-      "negroni": { "name": "Negroni", "description": "(Gin, roter Wermut, Campari, Orangenscheibe)" },
-      "negroni_sbagliato": { "name": "Negroni Sbagliato", "description": "(roter Wermut, Campari, Prosecco, Orangenscheibe)" },
-      "martini_cocktail": { "name": "Martini Cocktail", "description": "(Gin, trockener Wermut, Limettenschale, Oliven)" },
-      "mimosa": { "name": "Mimosa", "description": "(Prosecco, Orangensaft)" },
-      "kir": { "name": "Kir", "description": "(stiller Weißwein, Crème de Cassis)" },
-      "kir_royale": { "name": "Kir Royale", "description": "(Prosecco, Crème de Cassis)" },
-      "rossini": { "name": "Rossini", "description": "(Prosecco, Erdbeere)" },
-      "aperol_spritz": { "name": "Aperol Spritz", "description": "(Prosecco, Aperol, Soda, Orangenscheibe)" },
-      "campari_spritz": { "name": "Campari Spritz", "description": "(Prosecco, Campari, Soda, Orangenscheibe)" },
-      "manhattan": { "name": "Manhattan", "description": "(Rye Whiskey, roter Wermut, Angostura, Kirsche)" },
-      "dry_manhattan": { "name": "Dry Manhattan", "description": "(Rye Whiskey, trockener Wermut, Angostura, Zitronenschale)" },
-      "perfect_manhattan": { "name": "Perfect Manhattan", "description": "(Rye Whiskey, roter Wermut, trockener Wermut, Kirsche)" },
-      "rob_roy": { "name": "Rob Roy", "description": "(Scotch Whisky, roter Wermut, Angostura, Kirsche)" },
-      "dry_martini": { "name": "Dry Martini", "description": "(Gin, trockener Wermut, Zitronenschalenspritzer)" },
-      "vodka_martini": { "name": "Vodka Martini", "description": "(Wodka, trockener Wermut, Zitronenschalenspritzer)" },
-      "sweet_martini": { "name": "Sweet Martini", "description": "(Gin, roter Wermut, Kirsche)" },
-      "perfect_martini": { "name": "Perfect Martini", "description": "(Gin, roter Wermut, trockener Wermut, Kirsche)" },
-
-      "black_russian": { "name": "Black Russian", "description": "(Wodka, Kahlua)" },
-      "white_russian": { "name": "White Russian", "description": "(Wodka, Kahlua, Sahne)" },
-      "cosmopolitan": { "name": "Cosmopolitan", "description": "(Wodka, Triple Sec, Cranberry, Zitrone)" },
-      "daiquiri": { "name": "Daiquiri", "description": "(Rum, Limetten- oder Zitronensaft, Zuckersirup)" },
-      "french_connection": { "name": "French Connection", "description": "(Cognac, Disaronno)" },
-      "mexican_passion": { "name": "Mexican Passion", "description": "(Tequila Blanco, Triple Sec, Limettensaft, Passionsfruchtsaft, Zitronenscheibe)" },
-      "lynchburg_lemonade": { "name": "Lynchburg Lemonade", "description": "(Jack Daniel's, Triple Sec, Zitronensaft, Sprite)" },
-      "sex_on_the_beach": { "name": "Sex on the Beach", "description": "(Vodka, Pfirsichlikör, Orangensaft, Cranberrysaft)" },
-      "gin_fizz": { "name": "Gin Fizz", "description": "(Gin, Zitronensaft, Zuckersirup, Sodawasser)" },
-      "godfather": { "name": "Godfather", "description": "(Whisky, Disaronno)" },
-      "godmother": { "name": "Godmother", "description": "(Wodka, Disaronno)" },
-      "kamikaze": { "name": "Kamikaze", "description": "(Wodka, Triple Sec, Zitronensaft)" },
-      "whitelady": { "name": "White Lady", "description": "(Gin, Triple Sec, Zitronensaft)" },
-      "limbo": { "name": "Limbo", "description": "(weißer Rum, Bananenlikör, Orangensaft)" },
-      "margarita": { "name": "Margarita", "description": "(Tequila, Triple Sec, Limetten- oder Zitronensaft)" },
-      "orgasm": { "name": "Orgasm", "description": "(Baileys, Amaretto, Kahlua)" },
-      "melon_ball": { "name": "Melon Ball", "description": "(Midori, Wodka, Orangensaft)" },
-      "paradise": { "name": "Paradise", "description": "(Gin, Apricot Brandy, Orangensaft)" },
-      "rusty_nail": { "name": "Rusty Nail", "description": "(Scotch Whisky, Drambuie)" },
-      "sidecar": { "name": "Sidecar", "description": "(Cognac, Triple Sec oder Cointreau, Zitronensaft)" },
-      "stinger": { "name": "Stinger", "description": "(Brandy, weiße Crème de Menthe)" },
-
-      "cuba_libre": { "name": "Cuba Libre", "description": "(Rum, Coca-Cola, Limettensaft)" },
-      "pina_colada": { "name": "Pina Colada", "description": "(Rum, Kokoscreme, Ananas)" },
-      "pina_colada_varianti": { "name": "Pina-Colada-Varianten", "description": "(Erdbeere, Banane, usw.)" },
-      "screwdriver": { "name": "Screwdriver", "description": "(Wodka, Orangensaft)" },
-      "tequila_sunrise": { "name": "Tequila Sunrise", "description": "(Tequila, Orangensaft, Grenadine)" },
-
-      "long_island_iced_tea": {
-        "name": "Long Island Iced Tea",
-        "description": "(Wodka, Gin, Rum, Triple Sec, Sweet & Sour, Auffüllen mit Cola)"
+      "distillati": {
+        "title": "Spirituosen",
+        "description": "Whisky, Rum und andere erlesene Spirituosen."
       },
-      "texas_iced_tea": {
-        "name": "Texas Iced Tea",
-        "description": "(Wodka, Gin, Rum, Triple Sec, Tequila, Sweet & Sour, Auffüllen mit Cola)"
+      "vini-bianchi": {
+        "title": "Weißweine",
+        "description": "Auswahl apulischer und italienischer Weißweine."
       },
-      "japanese_iced_tea": {
-        "name": "Japanese Iced Tea",
-        "description": "(Wodka, Gin, Rum, Midori, Sweet & Sour, Lemonsoda)"
+      "vini-rosati": {
+        "title": "Roséweine",
+        "description": "Frische und fruchtige Rosés aus der apulischen Tradition."
       },
-      "italian_iced_tea": {
-        "name": "Italian Iced Tea",
-        "description": "(Wodka, Gin, Rum, Amaretto, Sweet & Sour, Lemonsoda)"
+      "vini-rossi": {
+        "title": "Rotweine",
+        "description": "Vollmundige und strukturierte Rotweine, apulisch und national."
       },
-      "california_iced_tea": {
-        "name": "California Iced Tea",
-        "description": "(Wodka, Gin, Rum, Triple Sec, Sweet & Sour, Orangensaft)"
+      "vini-bio": {
+        "title": "Bio-Weine",
+        "description": "Auswahl biologischer Weiß-, Rosé- und Rotweine."
       },
-
-      "caipirinha": { "name": "Caipirinha", "description": "(Cachaça, Limette, Rohrzucker)" },
-      "caipiroska": { "name": "Caipiroska", "description": "(Wodka, Limette, Rohrzucker)" },
-      "strawberry_caipiroska": { "name": "Strawberry Caipiroska", "description": "(Wodka, Limette, Rohrzucker, Erdbeere)" },
-      "caipirissima": { "name": "Caipirissima", "description": "(Rum, Limette, Rohrzucker)" },
-      "caipiriteqa": { "name": "Caipiriteqa", "description": "(Tequila, Limette, Rohrzucker)" },
-      "mojito": { "name": "Mojito", "description": "(Rum, Limette, Minzblätter, Sodawasser)" },
-      "frozen_slammer": { "name": "Frozen Slammer", "description": "(Southern Comfort, Disaronno, Erdbeere, Sirup und Früchte)" },
-      "frozen_daiquiri": { "name": "Frozen Daiquiri", "description": "(Rum, Erdbeere, Banane, Ananas, usw., Sweet & Sour)" },
-      "frozen_margarita": { "name": "Frozen Margarita", "description": "(Tequila, Erdbeere, Banane, Ananas, usw., Sweet & Sour)" },
-
-      "virgin_colada": {
-        "name": "Virgin Colada",
-        "description": "(Kokosmilch oder Pina-Colada-Mix, Orangensaft)"
-      },
-      "daiquiri_strawberry": {
-        "name": "Strawberry Daiquiri",
-        "description": "(Erdbeersirup, Limetten- oder Zitronensaft)"
-      },
-      "florida": {
-        "name": "Florida",
-        "description": "(Grapefruitsaft, Orangensaft, Limetten- oder Zitronensaft, Zuckersirup, Sodawasser)"
-      },
-      "shirley_temple": {
-        "name": "Shirley Temple",
-        "description": "(Ginger Ale, Grenadinesirup)"
-      },
-      "red_peach": {
-        "name": "Red Peach",
-        "description": "(Erdbeersirup, Pfirsichsaft, Ananassaft)"
-      },
-      "sweet_strawberry": {
-        "name": "Sweet Strawberry",
-        "description": "(Erdbeersirup, Orangensaft, Auffüllen mit Sprite)"
-      },
-
-      "montenegro": { "name": "Montenegro", "description": "4cl" },
-      "jagermeister": { "name": "Jagermeister", "description": "4cl" },
-      "unicum": { "name": "Unicum", "description": "4cl" },
-      "del_capo": { "name": "Amaro del Capo", "description": "4cl" },
-      "sambuca": { "name": "Sambuca", "description": "4cl" },
-      "kahlua": { "name": "Kahlua", "description": "4cl" },
-      "limoncello": { "name": "Limoncello", "description": "4cl" },
-      "cointreau": { "name": "Cointreau", "description": "4cl" },
-      "grand_marnier": { "name": "Grand Marnier", "description": "4cl" },
-      "pernod": { "name": "Pernod", "description": "4cl" },
-      "batida_de_coco": { "name": "Batida de coco", "description": "4cl" },
-      "midori": { "name": "Midori", "description": "4cl" },
-      "malibu": { "name": "Malibu", "description": "4cl" },
-
-      "tacco_barocco_bianco": {
-        "name": "Tacco Barocco - Negroamaro Bianco Primitivo",
-        "description": "Noten von weißen Blüten und Zitrusfrüchten, frisch und anhaltend. Cantina Sampietrana. 750 ml"
-      },
-      "verdeca_salento": {
-        "name": "Verdeca del Salento",
-        "description": "Ein autochthoner Wein mit feinem Bouquet und trockenem Geschmack. Cantina Verdeca. 750 ml"
-      },
-      "verdeca_itria": {
-        "name": "Verdeca Valle d'Itria",
-        "description": "Frisch und fruchtig, mit angenehmer Würze. Cantina Verdeca. 750 ml"
-      },
-      "tacco_barocco_negroamaro": {
-        "name": "Tacco Barocco - Negroamaro",
-        "description": "Intensives Rubinrot mit Noten kleiner roter Früchte. Cantina Sampietrana. 750 ml"
-      },
-      "tacco_barocco_puglia_igp": {
-        "name": "Tacco Barocco - Puglia IGP",
-        "description": "Vollmundig und ausgewogen, perfekt zu Platten zum Teilen. Cantina Sampietrana. 750 ml"
-      },
-      "rosato_salento": {
-        "name": "Rosé aus dem Salento",
-        "description": "Frisch und fruchtig, mit Noten von Kirsche und Himbeere. 750 ml"
-      },
-      "prosecco_doc": {
-        "name": "Prosecco DOC",
-        "description": "Feine, anhaltende Perlage, ideal als Aperitif. 750 ml"
-      },
-
-      "vini_labels": {
-        "calice_vino": "Glas Wein",
-        "calice_prosecco": "Glas Prosecco",
-        "bianchi": "Weißweine",
-        "rossi": "Rotweine",
-        "rosati": "Roséweine",
-        "bollicine": "Schaumweine",
-        "bianco": "Weiß",
-        "rosato": "Rosé",
-        "rosso": "Rot"
-      },
-      "cocktails_labels": {
-        "pre-dinner": "Pre-Dinner",
-        "pre-dinner_martini_cocktails": "Pre-Dinner / Martini Cocktails",
-        "after_dinner": "After Dinner",
-        "long_drinks": "Longdrinks",
-        "iced_tea": "Iced Tea",
-        "pestati_e_frozen": "Muddled & Frozen",
-        "soft_drink": "Softdrinks"
-      },
-      "superalcolici_labels": {
-        "whisky": "Whisky",
-        "vodka": "Wodka",
-        "rum": "Rum",
-        "gin": "Gin",
-        "tequila": "Tequila & Mezcal",
-        "grappe_cognac": "Grappa, Cognac, Brandy & Armagnac",
-        "shot": "Shot",
-        "shot_2cl": "Shot mit Basis-Spirituosen (2 cl)",
-        "shot_4cl": "Shot mit Basis-Spirituosen (4 cl)"
-      },
-      "jack_daniels": { "name": "Jack Daniel's", "description": "4cl" },
-      "johnnie_walker": { "name": "Johnnie Walker", "description": "4cl" },
-      "lagavulin": { "name": "Lagavulin", "description": "4cl" },
-      "absolut": { "name": "Absolut", "description": "4cl" },
-      "moskovskaya": { "name": "Moskovskaya", "description": "4cl" },
-      "stolichnaya": { "name": "Stolichnaya", "description": "4cl" },
-      "ciroc": { "name": "Cîroc", "description": "4cl" },
-      "aniversario": { "name": "Pampero Aniversario", "description": "4cl" },
-      "havana_3": { "name": "Havana Club 3", "description": "4cl" },
-      "havana_7": { "name": "Havana Club 7", "description": "4cl" },
-      "zacapa": { "name": "Zacapa", "description": "4cl" },
-      "kraken": { "name": "Kraken", "description": "4cl" },
-      "tanqueray": { "name": "Tanqueray", "description": "4cl" },
-      "bombay": { "name": "Bombay Sapphire", "description": "4cl" },
-      "gin_mare": { "name": "Gin Mare", "description": "4cl" },
-      "hendricks": { "name": "Hendrick's", "description": "4cl" },
-      "malfy_originale": { "name": "Malfy Originale", "description": "4cl" },
-      "malfy_pompelmo": { "name": "Malfy Pompelmo", "description": "4cl" },
-      "malfy_arancia": { "name": "Malfy Arancia", "description": "4cl" },
-      "cubical": { "name": "Cubical", "description": "4cl" },
-      "citadelle": { "name": "Gin Citadelle", "description": "4cl" },
-      "roku": { "name": "Roku", "description": "4cl" },
-      "nordes": { "name": "Nordés", "description": "4cl" },
-      "jose_cuervo": { "name": "Jose Cuervo", "description": "4cl" },
-      "fortaleza": { "name": "Fortaleza", "description": "4cl" },
-      "grappa_bianca": { "name": "Weißer Grappa", "description": "4cl" },
-      "grappa_barricata": { "name": "Barricata Grappa Amarone della Valpolicella", "description": "4cl" },
-      "vecchia_romagna": { "name": "Vecchia Romagna", "description": "4cl" },
-      "martell": { "name": "Martell", "description": "4cl" },
-      "armagnac": { "name": "Armagnac", "description": "Demnächst" },
-      "shot_2cl": { "name": "Shot mit Basis-Spirituosen (2 cl)", "description": "Kleine Kostprobe" },
-      "shot_4cl": { "name": "Shot mit Basis-Spirituosen (4 cl)", "description": "Standard-Kostprobe" },
-
-      "frullato_tropicale": {
-        "name": "Tropischer Smoothie",
-        "subtitle": "Mango, Ananas, Kokosnuss",
-        "description": "Ein cremiger und erfrischender exotischer Mix.",
-        "notes": {
-          "fresco": "Frisch",
-          "vitamina_c": "Vitamin C"
-        }
-      },
-      "frutti_di_bosco": {
-        "name": "Waldbeer-Smoothie",
-        "subtitle": "Brombeere, Himbeere, Blaubeere",
-        "description": "Der intensive Geschmack von Waldbeeren in einem samtigen Mix.",
-        "notes": {
-          "antiossidante": "Antioxidativ"
-        }
-      },
-      "bevande_labels": {
-        "acqua": "Stilles / Sprudelwasser",
-        "succhi": "Fruchtsäfte",
-        "te": "Pfirsich- / Zitronentee",
-        "san_bitter": "San Bitter Weiß / Rot",
-        "tonica": "Tonic Water"
-      },
-      "acqua": { "name": "Stilles / Sprudelwasser", "description": "50cl" },
-      "coca_cola": { "name": "Coca-Cola / Coca-Cola Zero", "description": "33cl" },
-      "fanta": { "name": "Fanta", "description": "33cl" },
-      "succhi": { "name": "Fruchtsäfte", "description": "20cl" },
-      "chinotto": { "name": "Chinotto", "description": "33cl" },
-      "schweppes_lemon": { "name": "Schweppes Lemon", "description": "33cl" },
-      "te": { "name": "Pfirsich- / Zitronentee", "description": "33cl" },
-      "san_bitter": { "name": "San Bitter Weiß / Rot", "description": "10cl" },
-      "cocktail_sp": { "name": "San Pellegrino Cocktail", "description": "20cl" },
-      "crodino": { "name": "Crodino", "description": "10cl" },
-      "tonica": { "name": "Tonic Water", "description": "33cl" },
-      "red_bull": { "name": "Red Bull", "description": "25cl" },
-      "centrifuga": { "name": "Saisonaler Saft", "description": "Je nach Saison" },
-      "calice_vino": { "name": "Glas Wein", "description": "Hausauswahl" },
-      "calice_prosecco": { "name": "Glas Prosecco", "description": "Ausgewählte Schaumweine" },
-
-      "cocktail_ingredients": {
-        "arancia": "Orange",
-        "acqua_tonica": "Tonic Water",
-        "zucchero_di_canna": "Rohrzucker",
-        "lime": "Limette",
-        "ghiaccio_tritato": "Crushed Ice",
-        "fragola": "Erdbeere",
-        "succo_di_lime": "Limettensaft",
-        "sciroppo_di_sambuco": "Holunderblütensirup",
-        "menta": "Minze",
-        "sweet_sour_limone": "Zitronen-Sweet-&-Sour",
-        "rum_scuro": "dunkler Rum",
-        "acqua_frizzante": "Sprudelwasser",
-        "vermouth_rosso": "roter Wermut",
-        "liquore_pesca": "Pfirsichlikör",
-        "succo_arancia": "Orangensaft",
-        "succo_mirtillo": "Cranberrysaft",
-        "scorza_lime": "Limettenschale",
-        "olive": "Oliven",
-        "caffe_espresso": "Espresso",
-        "liquore_caffe": "Kaffeelikör",
-        "zucchero": "Zucker",
-        "scorza_arancia": "Orangenschale",
-        "fetta_arancia": "Orangenscheibe",
-        "fetta_limone": "Zitronenscheibe",
-        "scorza_limone": "Zitronenschale",
-        "buccia_limone": "Zitronenschale",
-        "sprizzo_buccia_limone": "Zitronenschalenspritzer",
-        "ribes_rosso": "rote Johannisbeere",
-        "qb": "nach Belieben",
-        "latte_di_cocco": "Kokosmilch",
-        "pina_colada_mix": "Pina-Colada-Mix",
-        "sciroppo_di_fragola": "Erdbeersirup",
-        "succo_di_lime_o_limone": "Limetten- oder Zitronensaft",
-        "succo_di_pompelmo": "Grapefruitsaft",
-        "sciroppo_di_zucchero": "Zuckersirup",
-        "soda_water": "Sodawasser",
-        "ginger_ale": "Ginger Ale",
-        "sciroppo_di_granatina": "Grenadinesirup",
-        "succo_di_pesca": "Pfirsichsaft",
-        "succo_d_ananas": "Ananassaft",
-        "top_of_sprite": "Auffüllen mit Sprite",
-        "vermouth_dry": "trockener Wermut",
-        "vino_bianco_fermo": "stiller Weißwein",
-        "creme_de_cassis": "Crème de Cassis",
-        "champagne": "Champagner",
-        "prosecco": "Prosecco",
-        "rye_whiskey": "Rye Whiskey",
-        "angostura": "Angostura",
-        "ciliegina": "Kirsche",
-        "crema_di_latte": "Sahne",
-        "crema_di_cacao_scuro": "dunkle Crème de Cacao",
-        "vodka": "Wodka",
-        "kahlua": "Kahlua",
-        "triple_sec": "Triple Sec",
-        "cranberry": "Cranberry",
-        "limone": "Zitrone",
-        "rum": "Rum",
-        "cognac": "Cognac",
-        "amaretto_di_saronno": "Disaronno",
-        "whisky": "Whisky",
-        "amaretto": "Amaretto",
-        "rum_bianco": "weißer Rum",
-        "creme_de_banana": "Bananenlikör",
-        "tequila": "Tequila",
-        "baileys": "Baileys",
-        "midori": "Midori",
-        "tequila_blanco_passoa": "Tequila Blanco/Passoa",
-        "polpa_frutto_della_passione": "Passionsfruchtfleisch",
-        "ananas": "Ananas",
-        "apricot_brandy": "Apricot Brandy",
-        "scotch_whisky": "Scotch Whisky",
-        "drambuie": "Drambuie",
-        "cointreau": "Cointreau",
-        "crema_di_menta_bianca": "weiße Crème de Menthe",
-        "southern_comfort": "Southern Comfort",
-        "sloe_gin": "Sloe Gin",
-        "granatina": "Granadine",
-        "coca_cola": "Coca-Cola",
-        "jack_daniels": "Jack Daniel's",
-        "sprite": "Sprite",
-        "crema_di_cocco": "Kokoscreme",
-        "liquore_di_pesca": "Pfirsichlikör",
-        "succo_di_cranberry": "Cranberrysaft",
-        "cherry_brandy": "Cherry Brandy",
-        "liquore_gin_prugnolo": "Schlehenlikör auf Gin-Basis",
-        "sweet_sour": "Sweet & Sour",
-        "top_of_coke": "Auffüllen mit Cola",
-        "lemonsoda": "Lemonsoda",
-        "cachaca": "Cachaça",
-        "foglie_di_menta": "Minzblätter",
-        "watersoda": "Sodawasser",
-        "disaronno": "Disaronno",
-        "sciroppo_e_frutta": "Sirup und Früchte",
-        "banana": "Banane",
-        "ecc": "usw."
-      },
-      "common_notes": {
-        "vegetariano": "Vegetarisch",
-        "perfetto_per_due": "Perfekt für zwei",
-        "stuzzicheria": "Häppchen",
-        "servito_caldo": "Warm serviert",
-        "fresco": "Frisch",
-        "mare": "Aus dem Meer",
-        "vitamina_c": "Vitamin C",
-        "antiossidante": "Antioxidativ"
+      "prosecco": {
+        "title": "Prosecco & Champagne",
+        "description": "Perlweine für jeden Anlass."
       }
     }
   },
   "experience": {
-    "eyebrow": "Erlebnis",
-    "title": "Piazza San Domenico, Nardò: Gläser und Abende für alle.",
-    "text": "Im barocken Herzen der Piazza San Domenico, zwischen Lecce-Stein und geschichtsträchtigen Gebäuden, heißt L'Angolo diVino alle Menschen mit Respekt, Musik und Themenabenden willkommen - in einer Atmosphäre, die zum Bleiben einlädt."
+    "eyebrow": "Das Lokal",
+    "title": "Ein Bistrot im Herzen der Stadt.",
+    "text": "Il Bistrò dei Dotti ist ein Ort, an dem Küche auf Geselligkeit trifft. Sorgfältig zubereitete Gerichte, frische saisonale Zutaten und eine Weinauswahl, die jeden Moment des Abends begleitet."
   },
   "contacts": {
     "eyebrow": "Kontakt",

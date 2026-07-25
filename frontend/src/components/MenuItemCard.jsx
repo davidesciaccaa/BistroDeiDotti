@@ -39,12 +39,12 @@ export function MenuItemCard({ item }) {
     const viniTranslated = t(`menu.items.vini_labels.${viniLabelKey}`, { defaultValue: '' });
     if (viniTranslated) return viniTranslated;
 
-    const superLabelKey = subtitle.toLowerCase()
+    const spiritsLabelKey = subtitle.toLowerCase()
       .replace(/ & /g, '_')
       .replace(/, /g, '_')
       .replace(/ /g, '_');
-    const superTranslated = t(`menu.items.superalcolici_labels.${superLabelKey}`, { defaultValue: '' });
-    if (superTranslated) return superTranslated;
+    const spiritsTranslated = t(`menu.items.distillati_labels.${spiritsLabelKey}`, { defaultValue: '' });
+    if (spiritsTranslated) return spiritsTranslated;
 
     const bevandeLabelKey = subtitle.toLowerCase().replace(/ /g, '_');
     const bevandeTranslated = t(`menu.items.bevande_labels.${bevandeLabelKey}`, { defaultValue: '' });

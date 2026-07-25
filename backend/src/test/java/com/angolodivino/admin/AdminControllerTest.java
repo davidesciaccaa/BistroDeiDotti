@@ -14,6 +14,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -53,6 +54,11 @@ class AdminControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @BeforeEach
+    void cleanOverridesFile() throws IOException {
+        Files.deleteIfExists(OVERRIDES_FILE);
+    }
+
     @Test
     void rejectsMenuAccessWithoutToken() throws Exception {
         mockMvc.perform(get("/api/admin/menu/sections"))
@@ -83,7 +89,7 @@ class AdminControllerTest {
         mockMvc.perform(get("/api/admin/menu/sections")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is("aperitivo")));
+                .andExpect(jsonPath("$[0].id", is("antipasti")));
     }
 
     @Test
@@ -98,7 +104,7 @@ class AdminControllerTest {
 
         mockMvc.perform(get("/api/menu/sections"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[1].items[?(@.id == 'negroni')].price", is(List.of("11 €"))));
+                .andExpect(jsonPath("$[*].items[?(@.id == 'negroni')].price", is(List.of("11 €"))));
     }
 
     @Test

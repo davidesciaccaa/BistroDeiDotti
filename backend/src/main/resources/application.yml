@@ -1,6 +1,6 @@
 spring:
   application:
-    name: angolo-di-vino-api
+    name: bistro-dei-dotti-api
   jackson:
     default-property-inclusion: non_null
   lifecycle:

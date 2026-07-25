@@ -1,10 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import heroImage from '../assets/lounge-still-life.jpeg';
-import { StatusBadge } from './StatusBadge.jsx';
 import { LanguageSwitcher } from './LanguageSwitcher.jsx';
 
-export function Hero({ status }) {
+export function Hero() {
   const { t } = useTranslation();
 
   // Scroll Indicators Logic for Hero Nav
@@ -40,46 +39,49 @@ export function Hero({ status }) {
   return (
     <section className="hero" style={{ '--hero-image': `url(${heroImage})` }}>
       <header className="site-header" aria-label="Intestazione principale">
-        <a className="brand" href="#top" aria-label="L'Angolo diVino">
-          L&apos;Angolo di<span className="brand-v">V</span>ino
+        <a className="brand" href="#top" aria-label="Il Bistrò dei Dotti">
+          Il Bistr&ograve; dei <span className="brand-v">Dotti</span>
         </a>
         <div className="header-actions">
           <div className={`site-nav-wrapper ${showLeftIndicator ? 'has-left-scroll' : ''} ${showRightIndicator ? 'has-right-scroll' : ''}`}>
             <div className="nav-scroll-hint nav-scroll-hint--left" aria-hidden="true">
-              <span>‹</span>
+              <span>&#8249;</span>
             </div>
             <nav className="site-nav" aria-label="Navigazione principale" ref={navRef}>
-              <a href="#aperitivo">{t('nav.aperitivo')}</a>
-              <a href="#drink">{t('nav.drink')}</a>
-              <a href="#vini">{t('nav.vini')}</a>
-              <a href="#amari">{t('nav.amari')}</a>
-              <a href="#superalcolici">{t('nav.superalcolici')}</a>
+              <a href="#antipasti">{t('nav.antipasti')}</a>
+              <a href="#sfizi">{t('nav.sfizi')}</a>
+              <a href="#insalatone">{t('nav.insalatone')}</a>
+              <a href="#primi-terra">{t('nav.primi_terra')}</a>
+              <a href="#secondi-terra">{t('nav.secondi_terra')}</a>
+              <a href="#primi-mare">{t('nav.primi_mare')}</a>
+              <a href="#secondi-mare">{t('nav.secondi_mare')}</a>
+              <a href="#dolci">{t('nav.dolci')}</a>
               <a href="#bevande">{t('nav.bevande')}</a>
+              <a href="#gin">{t('nav.gin')}</a>
+              <a href="#cocktails">{t('nav.cocktails')}</a>
+              <a href="#amari">{t('nav.amari')}</a>
+              <a href="#distillati">{t('nav.distillati')}</a>
+              <a href="#vini-bianchi">{t('nav.vini')}</a>
               <a href="#contatti">{t('nav.contatti')}</a>
             </nav>
             <div className="nav-scroll-hint nav-scroll-hint--right" aria-hidden="true">
-              <span>›</span>
+              <span>&#8250;</span>
             </div>
           </div>
           <LanguageSwitcher />
         </div>
       </header>
 
-
       <div className="hero__content" id="top">
-        {/* <StatusBadge status={status} /> */}
         <p className="hero__eyebrow">{t('hero.eyebrow')}</p>
-        <h1 className="hero__title">L&apos;Angolo di<span className="brand-v">V</span>ino</h1>
+        <h1 className="hero__title">Il Bistr&ograve; dei <span className="brand-v">Dotti</span></h1>
         <p className="hero__copy">
           {t('hero.copy')}
         </p>
         <div className="hero__actions" aria-label="Azioni principali">
-          <a className="button button--primary" href="#aperitivo">
+          <a className="button button--primary" href="#antipasti">
             {t('hero.button')}
           </a>
-          {/* <a className="button button--ghost" href="#contatti">
-            Prenota un tavolo
-          </a> */}
         </div>
       </div>
 
