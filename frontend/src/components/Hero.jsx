@@ -14,7 +14,7 @@ export function Hero() {
   const scrollNav = (direction) => {
     if (navRef.current) {
       navRef.current.scrollBy({
-        left: direction === 'left' ? -250 : 250,
+        left: direction === 'left' ? -100 : 100,
         behavior: 'smooth',
       });
     }
@@ -64,11 +64,10 @@ export function Hero() {
             {showLeftIndicator && (
               <button
               className="nav-scroll-hint nav-scroll-hint--left"
-              style={{ opacity: showLeftIndicator ? 1 : 0 }}
               onClick={() => scrollNav('left')}
               aria-label="Scorri menu a sinistra"
             >
-              <span className="nav-arrow">←</span>
+              <span className="nav-arrow">‹</span>
             </button>)}
 
             <nav className="site-nav" aria-label="Navigazione principale" ref={navRef}>
@@ -94,7 +93,7 @@ export function Hero() {
                   onClick={() => scrollNav('right')}
                   aria-label="Scorri menu a destra"
                 >
-                  <span className="nav-arrow">→</span>
+                  <span className="nav-arrow">›</span>
                 </button>
               )}
           </div>

@@ -1294,74 +1294,107 @@ html {
 
 
 .nav-scroll-hint {
-  position:absolute;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 
-  top:0;
-  bottom:0;
+  width: 44px;
+  height: 44px;
 
-  width:55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  border: none;
+  border-radius: 50%;
 
-  border:0;
+  cursor: pointer;
 
-  color:white;
-  cursor:pointer;
+  color: white;
 
-  z-index:10;
+  opacity: 0;
+  pointer-events: none;
 
-  opacity:0;
-  pointer-events:none;
+  z-index: 50;
 
-  transition:opacity .25s ease;
+  transition:
+    opacity .25s ease,
+    transform .25s ease,
+    background .25s ease;
 }
 
 
 .has-left-scroll .nav-scroll-hint--left,
 .has-right-scroll .nav-scroll-hint--right {
-  opacity:1;
-  pointer-events:auto;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 
-.nav-scroll-hint--left {
-  left:0;
-
-  background:
-    linear-gradient(
-      90deg,
-      rgba(18,11,12,.95),
-      rgba(18,11,12,.35),
-      transparent
-    );
+.nav-scroll-hint:hover {
+  transform: translateY(-50%) scale(1.08);
 }
 
 
-.nav-scroll-hint--right {
-  right:0;
-
-  background:
-    linear-gradient(
-      270deg,
-      rgba(18,11,12,.95),
-      rgba(18,11,12,.35),
-      transparent
-    );
-}
-
+/* Freccia */
 
 .nav-arrow {
-  font-family: Georgia, serif;
-  font-size:30px;
-  text-shadow:
-    0 3px 15px rgba(0,0,0,.9);
+  font-family: "Times New Roman", serif;
+  font-size: 30px;
+  font-weight: 300;
 
-  transition:transform .25s ease;
+  line-height: 1;
+
+  text-shadow:
+    0 2px 10px rgba(0,0,0,.8);
+
+  opacity: .9;
+}
+
+
+/* contenitore */
+
+.site-nav-wrapper {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
+
+/* sinistra */
+
+.nav-scroll-hint--left {
+  left: 8px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(18,11,12,.75),
+      rgba(18,11,12,.25),
+      transparent 0%
+    );
+
+  backdrop-filter: blur(8px);
+}
+
+
+/* destra */
+
+.nav-scroll-hint--right {
+  right: 8px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(18,11,12,.75),
+      rgba(18,11,12,.25),
+      transparent 0%
+    );
+
+  backdrop-filter: blur(8px);
 }
 
 
 .nav-scroll-hint:hover .nav-arrow {
-  transform:scale(1.15);
+  opacity:1;
 }
