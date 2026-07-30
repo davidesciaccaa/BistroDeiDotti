@@ -28,4 +28,6 @@ app:
     password: ${ADMIN_PASSWORD:}
     session-ttl: ${ADMIN_SESSION_TTL:8h}
   menu:
-    overrides-file: ${MENU_OVERRIDES_FILE:data/menu-overrides.json}
+    data-directory: ${MENU_DATA_DIRECTORY:data}
+    default-resource: menu.default.json
+    legacy-overrides-file: ${MENU_LEGACY_OVERRIDES_FILE:${MENU_OVERRIDES_FILE:data/menu-overrides.json}}

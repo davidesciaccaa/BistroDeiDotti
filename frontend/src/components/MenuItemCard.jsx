@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { formatEuro } from '../utils/price.js';
 
 export function MenuItemCard({ item }) {
   const { t, i18n } = useTranslation();
@@ -66,9 +67,7 @@ export function MenuItemCard({ item }) {
       defaultValue: t(`menu.items.common_notes.${noteKey}`, { defaultValue: note }) 
     });
   });
-  const price = item.price === null || item.price === undefined || item.price === ''
-    ? ''
-    : `${Number(item.price).toLocaleString('it-IT', { maximumFractionDigits: 2 })} €`;
+  const price = formatEuro(item.price);
 
   return (
     <article className="menu-item-editorial">

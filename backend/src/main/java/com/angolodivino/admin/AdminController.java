@@ -94,7 +94,7 @@ public class AdminController {
 
     @PatchMapping("/menu/prices")
     public List<MenuSectionResponse> updatePrices(@Valid @RequestBody UpdatePricesRequest request) {
-        Map<String, String> prices = request.prices();
+        Map<String, java.math.BigDecimal> prices = request.prices();
         log.info("Admin updating {} menu price(s)", prices.size());
         return menuService.updatePrices(prices);
     }

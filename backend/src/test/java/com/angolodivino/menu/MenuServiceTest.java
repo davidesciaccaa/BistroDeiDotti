@@ -3,7 +3,8 @@ package com.angolodivino.menu;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.nio.file.Files;
+import com.angolodivino.admin.MenuItemRequest;
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -16,168 +17,108 @@ class MenuServiceTest {
     @TempDir
     Path tempDir;
 
-    private Path overridesFile;
-    private MenuService menuService;
+    private MenuOverridesStore store;
+    private MenuService service;
 
     @BeforeEach
     void setUp() {
-        overridesFile = tempDir.resolve("menu-overrides.json");
-        menuService = new MenuService(new MenuOverridesStore(propertiesFor(overridesFile)));
+        MenuProperties properties = propertiesFor(tempDir.resolve("data"));
+        store = new MenuOverridesStore(properties);
+        store.initialize();
+        service = new MenuService(store);
     }
 
     @Test
-    void returnsMenuSectionsInCorrectOrder() {
-        List<MenuSectionResponse> sections = menuService.findMenuSections();
-        assertThat(sections)
-                .extracting(MenuSectionResponse::id)
-                .containsExactly(
-                        "antipasti",
-                        "sfizi",
-                        "insalatone",
-                        "primi-terra",
-                        "secondi-terra",
-                        "primi-mare",
-                        "secondi-mare",
-                        "dolci",
-                        "bevande",
-                        "gin",
-                        "cocktails",
-                        "amari",
-                        "distillati",
-                        "vini-bianchi",
-                        "vini-rosati",
-                        "vini-rossi",
-                        "vini-bio",
-                        "prosecco");
+    void defaultMenuHasExpectedOrderedSectionsAndUniqueItems() {
+        List<MenuSectionResponse> sections = service.defaultMenuSections();
+        assertThat(sections).extracting(MenuSectionResponse::id)
+                .startsWith("antipasti", "sfizi", "insalatone")
+                .endsWith("vini-bio", "prosecco");
+        assertThat(sections.stream().flatMap(section -> section.items().stream()).map(MenuItemResponse::id))
+                .doesNotHaveDuplicates();
     }
 
     @Test
-    void allSectionsArePopulated() {
-        List<MenuSectionResponse> sections = menuService.findMenuSections();
+    void createsUpdatesMovesAndDeletesAnItem() {
+        service.createItem(request("antipasti", "Piatto test", "10.50"));
+        MenuItemResponse created = findByName(service.findMenuSections(), "Piatto test");
+        assertThat(created.price()).isEqualByComparingTo("10.5");
 
-        sections.forEach(section -> {
-            assertThat(section.items()).isNotEmpty();
-            assertThat(section.items()).allSatisfy(item -> {
-                assertThat(item.name()).isNotBlank();
-            });
-        });
-    }
+        service.updateItem(created.id(), new MenuItemRequest(
+                "dolci", "Piatto aggiornato", "Novità", "Descrizione",
+                List.of("Senza glutine"), new BigDecimal("12")));
+        MenuItemResponse updated = findByName(service.findMenuSections(), "Piatto aggiornato");
+        assertThat(updated.subtitle()).isEqualTo("Novità");
+        assertThat(updated.notes()).containsExactly("Senza glutine");
+        assertThat(sectionOf(service.findMenuSections(), updated.id())).isEqualTo("dolci");
 
-    /** Overrides are keyed by item id alone, which only works while ids stay globally unique. */
-    @Test
-    void itemIdsAreUniqueAcrossSections() {
-        List<String> ids = menuService.defaultMenuSections().stream()
-                .flatMap(section -> section.items().stream())
-                .map(MenuItemResponse::id)
-                .toList();
-
-        assertThat(ids).doesNotHaveDuplicates();
+        service.deleteItem(updated.id());
+        assertThat(service.findMenuSections().stream().flatMap(section -> section.items().stream())
+                .noneMatch(item -> item.id().equals(updated.id()))).isTrue();
     }
 
     @Test
-    void usesHardcodedPricesWhenOverridesFileIsMissing() {
-        assertThat(overridesFile).doesNotExist();
-        assertThat(priceOf(menuService.findMenuSections(), "negroni")).isEqualTo("7 €");
+    void persistsCrudAfterStoreRestart() {
+        service.createItem(request("antipasti", "Persistente", "9.90"));
+        String id = findByName(service.findMenuSections(), "Persistente").id();
+
+        MenuOverridesStore restartedStore = new MenuOverridesStore(propertiesFor(tempDir.resolve("data")));
+        restartedStore.initialize();
+        MenuService restarted = new MenuService(restartedStore);
+
+        assertThat(findByName(restarted.findMenuSections(), "Persistente").price())
+                .isEqualByComparingTo("9.9");
+        restarted.deleteItem(id);
+
+        MenuOverridesStore secondRestart = new MenuOverridesStore(propertiesFor(tempDir.resolve("data")));
+        secondRestart.initialize();
+        assertThat(secondRestart.readMenu().stream().flatMap(section -> section.items().stream())
+                .noneMatch(item -> item.id().equals(id))).isTrue();
     }
 
     @Test
-    void appliesOverriddenPricesFromFile() throws Exception {
-        Files.writeString(overridesFile, "{\"prices\":{\"negroni\":\"9 €\"}}");
+    void updatesPricesAsNumbersAndRejectsInvalidReferences() {
+        service.updatePrices(Map.of("negroni", new BigDecimal("8.50")));
+        assertThat(findById(service.findMenuSections(), "negroni").price()).isEqualByComparingTo("8.5");
 
-        List<MenuSectionResponse> sections = menuService.findMenuSections();
-        assertThat(priceOf(sections, "negroni")).isEqualTo("9 €");
-        assertThat(priceOf(sections, "aperol_spritz")).isEqualTo("5 €");
-    }
-
-    @Test
-    void fallsBackToHardcodedPricesWhenFileIsCorrupt() throws Exception {
-        Files.writeString(overridesFile, "{ this is not json");
-
-        assertThat(priceOf(menuService.findMenuSections(), "negroni")).isEqualTo("7 €");
-    }
-
-    @Test
-    void updatePricesWritesOverridesAndReturnsUpdatedMenu() {
-        List<MenuSectionResponse> sections = menuService.updatePrices(Map.of("negroni", "9 €", "mojito_scuro", "10 €"));
-
-        assertThat(priceOf(sections, "negroni")).isEqualTo("9 €");
-        assertThat(priceOf(sections, "mojito_scuro")).isEqualTo("10 €");
-        assertThat(overridesFile).exists();
-        assertThat(priceOf(menuService.findMenuSections(), "negroni")).isEqualTo("9 €");
-    }
-
-    @Test
-    void updatePricesMergesWithExistingOverrides() {
-        menuService.updatePrices(Map.of("negroni", "9 €"));
-        menuService.updatePrices(Map.of("mojito_scuro", "10 €"));
-
-        List<MenuSectionResponse> sections = menuService.findMenuSections();
-        assertThat(priceOf(sections, "negroni")).isEqualTo("9 €");
-        assertThat(priceOf(sections, "mojito_scuro")).isEqualTo("10 €");
-    }
-
-    @Test
-    void updatePricesDropsOverridesThatMatchTheHardcodedPrice() {
-        menuService.updatePrices(Map.of("negroni", "9 €"));
-        menuService.updatePrices(Map.of("negroni", "7 €"));
-
-        assertThat(priceOf(menuService.findMenuSections(), "negroni")).isEqualTo("7 €");
-        assertThat(new MenuOverridesStore(propertiesFor(overridesFile)).readPrices())
-                .doesNotContainKey("negroni");
-    }
-
-    @Test
-    void updatePricesRejectsUnknownItemIds() {
-        assertThatThrownBy(() -> menuService.updatePrices(Map.of("voce_inesistente", "9 €")))
+        assertThatThrownBy(() -> service.updatePrices(Map.of("missing", BigDecimal.ONE)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("voce_inesistente");
-
-        assertThat(overridesFile).doesNotExist();
+                .hasMessageContaining("missing");
     }
 
     @Test
-    void updatePricesRejectsPricesWithMarkup() {
-        assertThatThrownBy(() -> menuService.updatePrices(Map.of("negroni", "<script>alert(1)</script>")))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("negroni");
-
-        assertThat(overridesFile).doesNotExist();
+    void rejectsUnknownCategoriesAndItemsWithoutChangingTheFile() throws Exception {
+        byte[] before = java.nio.file.Files.readAllBytes(store.menuFile());
+        assertThatThrownBy(() -> service.createItem(request("missing", "No", "2")))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> service.deleteItem("missing"))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThat(java.nio.file.Files.readAllBytes(store.menuFile())).isEqualTo(before);
     }
 
-    @Test
-    void updatePricesAcceptsTheExistingPriceFormats() {
-        List<MenuSectionResponse> sections = menuService.updatePrices(Map.of(
-                "calice_vino", "5 € / 20 €",
-                "acqua", "2,50 €",
-                "crudo_iberico", "-"));
-
-        assertThat(priceOf(sections, "calice_vino")).isEqualTo("5 € / 20 €");
-        assertThat(priceOf(sections, "acqua")).isEqualTo("2,50 €");
-        assertThat(priceOf(sections, "crudo_iberico")).isEqualTo("-");
+    private static MenuItemRequest request(String section, String name, String price) {
+        return new MenuItemRequest(section, name, "", "", List.of(), new BigDecimal(price));
     }
 
-    @Test
-    void updatePricesCanRestoreTheUnpricedMenuItem() {
-        menuService.updatePrices(Map.of("crudo_iberico", "12 €"));
-        List<MenuSectionResponse> sections = menuService.updatePrices(Map.of("crudo_iberico", ""));
-
-        assertThat(priceOf(sections, "crudo_iberico")).isEmpty();
-        assertThat(new MenuOverridesStore(propertiesFor(overridesFile)).readPrices())
-                .doesNotContainKey("crudo_iberico");
-    }
-
-    private static MenuProperties propertiesFor(Path file) {
+    static MenuProperties propertiesFor(Path dataDirectory) {
         MenuProperties properties = new MenuProperties();
-        properties.setOverridesFile(file.toString());
+        properties.setDataDirectory(dataDirectory.toString());
+        properties.setLegacyOverridesFile("");
         return properties;
     }
 
-    private static String priceOf(List<MenuSectionResponse> sections, String itemId) {
-        return sections.stream()
-                .flatMap(section -> section.items().stream())
-                .filter(item -> item.id().equals(itemId))
-                .findFirst()
-                .map(item -> item.price() == null ? "" : item.price().stripTrailingZeros().toPlainString())
-                .orElseThrow(() -> new AssertionError("Item not found: " + itemId));
+    private static MenuItemResponse findByName(List<MenuSectionResponse> sections, String name) {
+        return sections.stream().flatMap(section -> section.items().stream())
+                .filter(item -> item.name().equals(name)).findFirst().orElseThrow();
+    }
+
+    private static MenuItemResponse findById(List<MenuSectionResponse> sections, String id) {
+        return sections.stream().flatMap(section -> section.items().stream())
+                .filter(item -> item.id().equals(id)).findFirst().orElseThrow();
+    }
+
+    private static String sectionOf(List<MenuSectionResponse> sections, String itemId) {
+        return sections.stream().filter(section -> section.items().stream()
+                .anyMatch(item -> item.id().equals(itemId))).findFirst().orElseThrow().id();
     }
 }

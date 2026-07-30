@@ -11,14 +11,17 @@ public record MenuItemResponse(
         List<String> notes,
         BigDecimal price
 ) {
-    /** Keeps the seeded menu readable while exposing and persisting a numeric price. */
-    public MenuItemResponse(String id, String name, String subtitle, String description, List<String> notes, String price) {
-        this(id, name, subtitle, description, notes, parsePrice(price));
+    public MenuItemResponse {
+        notes = notes == null ? List.of() : List.copyOf(notes);
+        price = price == null ? null : price.stripTrailingZeros();
     }
 
-    private static BigDecimal parsePrice(String price) {
+    public static BigDecimal parsePrice(String price) {
         if (price == null || price.isBlank() || "-".equals(price.trim())) return null;
         String numeric = price.replaceAll("[^0-9,.-]", "").replace(',', '.');
+        if (numeric.indexOf('.') != numeric.lastIndexOf('.')) {
+            throw new IllegalArgumentException("Formato prezzo non convertibile: " + price);
+        }
         return numeric.isBlank() ? null : new BigDecimal(numeric);
     }
 }

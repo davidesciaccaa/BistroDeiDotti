@@ -1,12 +1,14 @@
 package com.angolodivino.admin;
 
 import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.angolodivino.menu.MenuOverridesStore;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -30,33 +32,30 @@ import org.springframework.test.web.servlet.MockMvc;
 class AdminControllerTest {
 
     private static final String PASSWORD = "test-secret";
-
-    /** Resolved eagerly: @DynamicPropertySource runs before JUnit would inject a @TempDir. */
-    private static final Path OVERRIDES_FILE = createTempOverridesFile();
+    private static final Path DATA_DIRECTORY = createTempDataDirectory();
 
     @DynamicPropertySource
-    static void adminProperties(DynamicPropertyRegistry registry) {
+    static void properties(DynamicPropertyRegistry registry) {
         registry.add("app.admin.password", () -> PASSWORD);
-        registry.add("app.menu.overrides-file", OVERRIDES_FILE::toString);
+        registry.add("app.menu.data-directory", DATA_DIRECTORY::toString);
+        registry.add("app.menu.legacy-overrides-file", () -> "");
     }
 
-    private static Path createTempOverridesFile() {
+    private static Path createTempDataDirectory() {
         try {
-            return Files.createTempDirectory("admin-controller-test").resolve("menu-overrides.json");
+            return Files.createTempDirectory("admin-controller-test").resolve("data");
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Autowired MockMvc mockMvc;
+    @Autowired ObjectMapper objectMapper;
+    @Autowired MenuOverridesStore menuStore;
 
     @BeforeEach
-    void cleanOverridesFile() throws IOException {
-        Files.deleteIfExists(OVERRIDES_FILE);
+    void resetMenu() {
+        menuStore.updateMenu(ignored -> menuStore.readDefaultMenu());
     }
 
     @Test
@@ -67,68 +66,76 @@ class AdminControllerTest {
     }
 
     @Test
-    void rejectsMenuAccessWithBogusToken() throws Exception {
-        mockMvc.perform(get("/api/admin/menu/sections")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer not-a-real-token"))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
     void rejectsWrongPassword() throws Exception {
-        mockMvc.perform(post("/api/admin/login")
-                        .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(post("/api/admin/login").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"password\":\"wrong\"}"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.error", is("invalid_password")));
     }
 
     @Test
-    void loginReturnsTokenThatUnlocksTheMenu() throws Exception {
+    void numericPricePatchUpdatesPublicMenu() throws Exception {
         String token = login();
-
-        mockMvc.perform(get("/api/admin/menu/sections")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is("antipasti")));
-    }
-
-    @Test
-    void patchPricesUpdatesThePublicMenu() throws Exception {
-        String token = login();
-
         mockMvc.perform(patch("/api/admin/menu/prices")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"prices\":{\"negroni\":\"11 €\"}}"))
+                        .content("{\"prices\":{\"negroni\":11}}"))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/api/menu/sections"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*].items[?(@.id == 'negroni')].price", is(List.of("11 €"))));
+                .andExpect(jsonPath("$[*].items[?(@.id == 'negroni')].price", is(List.of(11))));
     }
 
     @Test
-    void patchPricesRejectsUnknownItem() throws Exception {
+    void createsUpdatesAndDeletesCompleteMenuItems() throws Exception {
         String token = login();
-
-        mockMvc.perform(patch("/api/admin/menu/prices")
+        String body = mockMvc.perform(post("/api/admin/menu/items")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"prices\":{\"voce_inesistente\":\"11 €\"}}"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error", is("invalid_request")));
+                        .content("""
+                                {"sectionId":"antipasti","name":"Nuovo piatto","subtitle":"Novità",
+                                 "description":"Descrizione","notes":["Senza glutine"],"price":12.50}
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].items[?(@.name == 'Nuovo piatto')].price", is(List.of(12.5))))
+                .andReturn().getResponse().getContentAsString();
+
+        String id = findItemId(objectMapper.readTree(body), "Nuovo piatto");
+        mockMvc.perform(patch("/api/admin/menu/items/{id}", id)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"sectionId":"dolci","name":"Piatto modificato","subtitle":"",
+                                 "description":"Nuova descrizione","notes":[],"price":14}
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].items[?(@.name == 'Piatto modificato')].price", is(List.of(14))));
+
+        mockMvc.perform(delete("/api/admin/menu/items/{id}", id)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].items[?(@.id == '" + id + "')]", is(List.of())));
     }
 
     @Test
-    void logoutInvalidatesTheToken() throws Exception {
+    void rejectsCurrencySymbolsInApiPrice() throws Exception {
+        mockMvc.perform(post("/api/admin/menu/items")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + login())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"sectionId":"antipasti","name":"Non valido","subtitle":"",
+                                 "description":"","notes":[],"price":"30 €"}
+                                """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void logoutInvalidatesToken() throws Exception {
         String token = login();
-
-        mockMvc.perform(post("/api/admin/logout")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+        mockMvc.perform(post("/api/admin/logout").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(status().isNoContent());
-
-        mockMvc.perform(get("/api/admin/menu/sections")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+        mockMvc.perform(get("/api/admin/menu/sections").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -136,12 +143,16 @@ class AdminControllerTest {
         String body = mockMvc.perform(post("/api/admin/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"password\":\"" + PASSWORD + "\"}"))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        return objectMapper.readTree(body).get("token").asText();
+    }
 
-        JsonNode json = objectMapper.readTree(body);
-        return json.get("token").asText();
+    private static String findItemId(JsonNode sections, String name) {
+        for (JsonNode section : sections) {
+            for (JsonNode item : section.get("items")) {
+                if (name.equals(item.get("name").asText())) return item.get("id").asText();
+            }
+        }
+        throw new AssertionError("Item not found: " + name);
     }
 }

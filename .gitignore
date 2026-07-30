@@ -26,6 +26,7 @@ frontend/.env.*
 
 # Backend
 backend/data/
+data/
 backend/target/
 backend/.mvn/wrapper/maven-wrapper.jar
 backend/.settings/

@@ -9,7 +9,7 @@ export function AdminApp() {
 
   useEffect(() => {
     const previousTitle = document.title;
-    document.title = "Gestione prezzi · Il Bistrò dei Dotti";
+    document.title = "Gestione menù · Il Bistrò dei Dotti";
 
     // The panel is unlisted; keep it out of search results too.
     const robots = document.createElement('meta');

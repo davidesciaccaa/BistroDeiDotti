@@ -6,12 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * On-disk shape of {@code menu-overrides.json}: prices keyed by menu item id.
+ * Runtime JSON format. The legacy prices field is read only to migrate deployments
+ * that used menu-overrides.json before the complete catalogue became editable.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record MenuOverridesDocument(
         Instant updatedAt,
-        Map<String, String> prices,
-        List<MenuSectionResponse> sections
+        List<MenuSectionResponse> sections,
+        Map<String, String> prices
 ) {
+    public MenuOverridesDocument(Instant updatedAt, List<MenuSectionResponse> sections) {
+        this(updatedAt, sections, null);
+    }
 }

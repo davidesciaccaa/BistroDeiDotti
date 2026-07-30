@@ -13,7 +13,7 @@ RUN useradd --system --create-home appuser
 WORKDIR /app
 COPY --from=build /app/target/bistro-dei-dotti-api-0.1.0.jar app.jar
 
-# Holds menu-overrides.json; mount a volume here to keep price edits across restarts.
+# Holds menu.json and its backups; mount a volume here to keep edits across restarts.
 RUN mkdir -p /app/data && chown appuser:appuser /app/data
 
 USER appuser

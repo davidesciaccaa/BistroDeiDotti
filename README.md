@@ -38,7 +38,7 @@ URL principali:
 - Health check: `http://localhost:8080/actuator/health`
 - API stato: `http://localhost:8080/api/status`
 - API menu: `http://localhost:8080/api/menu/sections`
-- Pannello admin: `http://localhost:5173/admin` (vedi [Pannello admin](#pannello-admin-gestione-prezzi))
+- Pannello admin: `http://localhost:5173/admin` (vedi [Pannello admin](#pannello-admin-e-persistenza-del-menu))
 
 ## Configurazione CORS
 
@@ -61,9 +61,10 @@ VITE_API_BASE_URL=http://localhost:8080/api
 
 Senza `.env`, il frontend usa `/api`; in sviluppo Vite fa proxy verso `http://localhost:8080`.
 
-## Pannello admin (gestione prezzi)
+## Pannello admin e persistenza del menu
 
-Il proprietario modifica i prezzi del menù da `http://localhost:5173/admin`. È una pagina separata, non raggiungibile dai link pubblici del sito.
+Il proprietario crea, modifica, sposta ed elimina i piatti da `http://localhost:5173/admin`.
+Il prezzo viene inviato alle API come numero; il simbolo `€` è aggiunto soltanto dall'interfaccia.
 
 Il pannello è **disabilitato finché non imposti `ADMIN_PASSWORD`**: senza quella variabile ogni endpoint `/api/admin/**` risponde `503`.
 
@@ -78,12 +79,16 @@ Variabili disponibili:
 | --- | --- | --- |
 | `ADMIN_PASSWORD` | *(vuota)* | Password del pannello. Vuota = admin disattivato. |
 | `ADMIN_SESSION_TTL` | `8h` | Durata del token di sessione. |
-| `MENU_OVERRIDES_FILE` | `data/menu-overrides.json` | File JSON con i prezzi modificati. |
+| `MENU_DATA_DIRECTORY` | `data` | Directory runtime per menu e backup. |
+| `MENU_LEGACY_OVERRIDES_FILE` | `data/menu-overrides.json` | File del vecchio formato, migrato al primo avvio se presente. |
 
 Come funziona:
 
-- I prezzi modificati finiscono in `menu-overrides.json`, letto a ogni richiesta del menù: niente database e nessun riavvio dopo un salvataggio.
-- Se il file non esiste (o è illeggibile) valgono i prezzi hardcodati in `MenuService.java`. Rimettere un prezzo al valore originale ne rimuove la voce dal file.
+- `src/main/resources/menu.default.json` è il seed versionato e non viene mai modificato a runtime.
+- Al primo avvio il backend crea `data/menu.json`; ai riavvii successivi il file esistente non viene sovrascritto.
+- Tutte le modifiche vengono validate e salvate con file temporaneo e sostituzione atomica.
+- Il backend crea backup giornalieri in `data/backups/daily` (30 giorni) e mensili in `data/backups/monthly` (12 mesi), usando il fuso `Europe/Rome`.
+- Il controllo dei backup avviene all'avvio e ogni giorno alle 03:15 tramite lo scheduler interno di Spring.
 - Il login (`POST /api/admin/login`) restituisce un token opaco tenuto **solo in memoria**: si perde a ogni riavvio del backend. Il browser lo tiene in `sessionStorage`, quindi la sessione muore chiudendo il browser.
 - Il fallback `fallbackMenuSections` in `App.jsx` resta invariato e serve solo se il backend è irraggiungibile.
 
@@ -93,7 +98,7 @@ Con Docker, passa la password al compose (per esempio con un file `.env` accanto
 ADMIN_PASSWORD='una-password-lunga' docker compose up --build
 ```
 
-Il volume `menu-data` conserva `menu-overrides.json` tra un riavvio e l'altro dei container.
+Il volume `menu-data` conserva `menu.json` e i backup tra un riavvio e l'altro dei container.
 
 ## Avvio con Docker
 
