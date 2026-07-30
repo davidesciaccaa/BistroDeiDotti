@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { adminLogout, fetchAdminMenuSections, saveAdminPrices } from '../api/adminApi.js';
+import { adminLogout, createAdminMenuItem, deleteAdminMenuItem, fetchAdminMenuSections, saveAdminPrices, updateAdminMenuItem } from '../api/adminApi.js';
 import { PriceField } from './PriceField.jsx';
 
 /**
@@ -117,6 +117,21 @@ export function AdminMenuEditor({ onSignedOut }) {
     onSignedOut();
   }
 
+  async function editItem(item, sectionId) {
+    const name = window.prompt('Nome del piatto', item.name); if (name === null) return;
+    const subtitle = window.prompt('Sottotitolo (facoltativo)', item.subtitle || ''); if (subtitle === null) return;
+    const description = window.prompt('Descrizione (facoltativa)', item.description || ''); if (description === null) return;
+    const notes = window.prompt('Note, separate da virgole (facoltative)', (item.notes || []).join(', ')); if (notes === null) return;
+    const price = window.prompt('Prezzo numerico (es. 12.50)', item.price ?? ''); if (price === null) return;
+    const payload = { sectionId, name, subtitle, description, notes: notes.split(',').map((note) => note.trim()).filter(Boolean), price: price === '' ? null : Number(price.replace(',', '.')) };
+    try { setSections(item.id === '__new__' ? await createAdminMenuItem(payload) : await updateAdminMenuItem(item.id, payload)); setFeedback({ type: 'success', message: item.id === '__new__' ? 'Piatto aggiunto.' : 'Piatto aggiornato.' }); } catch (error) { setFeedback({ type: 'error', message: error.message }); }
+  }
+
+  async function addItem(sectionId) {
+    const name = window.prompt('Nome del nuovo piatto'); if (!name) return;
+    await editItem({ id: '__new__', name, subtitle: '', description: '', notes: [], price: '' }, sectionId).catch(() => {});
+  }
+
   return (
     <main className="admin-shell">
       {/* Sticky together, so the save confirmation is visible wherever the page is scrolled. */}
@@ -181,6 +196,7 @@ export function AdminMenuEditor({ onSignedOut }) {
                 <p className="admin-eyebrow">{section.title}</p>
                 <h2 className="admin-section__title">{section.title}</h2>
                 {section.description && <p className="admin-section__description">{section.description}</p>}
+                <button type="button" className="admin-button admin-button--ghost" onClick={() => addItem(section.id)}>Aggiungi piatto</button>
               </div>
 
               <div className="admin-item-list">
@@ -194,6 +210,7 @@ export function AdminMenuEditor({ onSignedOut }) {
 
                       <div className="admin-item__header">
                         <h3 className="admin-item__name">{item.name}</h3>
+                        <div className="admin-item__actions"><button type="button" className="admin-button admin-button--ghost" onClick={() => editItem(item, section.id)}>Modifica</button><button type="button" className="admin-button admin-button--quiet" onClick={async () => { if (window.confirm(`Eliminare ${item.name}?`)) setSections(await deleteAdminMenuItem(item.id)); }}>Elimina</button></div>
                         <PriceField
                           value={value}
                           isDirty={isDirty}

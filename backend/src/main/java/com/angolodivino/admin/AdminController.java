@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -96,6 +98,15 @@ public class AdminController {
         log.info("Admin updating {} menu price(s)", prices.size());
         return menuService.updatePrices(prices);
     }
+
+    @PostMapping("/menu/items")
+    public List<MenuSectionResponse> createItem(@Valid @RequestBody MenuItemRequest request) { return menuService.createItem(request); }
+
+    @PatchMapping("/menu/items/{id}")
+    public List<MenuSectionResponse> updateItem(@PathVariable String id, @Valid @RequestBody MenuItemRequest request) { return menuService.updateItem(id, request); }
+
+    @DeleteMapping("/menu/items/{id}")
+    public List<MenuSectionResponse> deleteItem(@PathVariable String id) { return menuService.deleteItem(id); }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<AdminApiError> handleInvalidRequest(IllegalArgumentException e) {

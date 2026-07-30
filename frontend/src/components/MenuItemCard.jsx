@@ -66,6 +66,9 @@ export function MenuItemCard({ item }) {
       defaultValue: t(`menu.items.common_notes.${noteKey}`, { defaultValue: note }) 
     });
   });
+  const price = item.price === null || item.price === undefined || item.price === ''
+    ? ''
+    : `${Number(item.price).toLocaleString('it-IT', { maximumFractionDigits: 2 })} €`;
 
   return (
     <article className="menu-item-editorial">
@@ -75,7 +78,7 @@ export function MenuItemCard({ item }) {
       
       <div className="menu-item-editorial__header">
         <h4>{name}</h4>
-        <span className="menu-item-editorial__price">{item.price}</span>
+        <span className="menu-item-editorial__price">{price}</span>
       </div>
 
       {description && (

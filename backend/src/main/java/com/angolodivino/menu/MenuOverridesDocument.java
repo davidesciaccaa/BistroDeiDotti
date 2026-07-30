@@ -2,6 +2,7 @@ package com.angolodivino.menu;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -10,6 +11,7 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record MenuOverridesDocument(
         Instant updatedAt,
-        Map<String, String> prices
+        Map<String, String> prices,
+        List<MenuSectionResponse> sections
 ) {
 }

@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
+import java.math.BigDecimal;
+import com.angolodivino.admin.MenuItemRequest;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +28,56 @@ public class MenuService {
      * The file is re-read here so price edits take effect without a restart.
      */
     public List<MenuSectionResponse> findMenuSections() {
-        return applyPriceOverrides(defaultMenuSections(), overridesStore.readPrices());
+        List<MenuSectionResponse> saved = overridesStore.readSections();
+        return saved.isEmpty() ? applyPriceOverrides(defaultMenuSections(), overridesStore.readPrices()) : saved;
     }
+
+    public List<MenuSectionResponse> createItem(MenuItemRequest request) {
+        List<MenuSectionResponse> sections = new java.util.ArrayList<>(findMenuSections());
+        String id = slug(request.name()) + "-" + java.util.UUID.randomUUID().toString().substring(0, 8);
+        boolean found = false;
+        for (int i = 0; i < sections.size(); i++) {
+            MenuSectionResponse section = sections.get(i);
+            if (!section.id().equals(request.sectionId())) continue;
+            List<MenuItemResponse> items = new java.util.ArrayList<>(section.items());
+            items.add(toItem(id, request));
+            sections.set(i, new MenuSectionResponse(section.id(), section.title(), section.description(), items));
+            found = true;
+            break;
+        }
+        if (!found) throw new IllegalArgumentException("Categoria sconosciuta: " + request.sectionId());
+        overridesStore.writeSections(sections);
+        return sections;
+    }
+
+    public List<MenuSectionResponse> updateItem(String id, MenuItemRequest request) {
+        List<MenuSectionResponse> sections = removeItem(findMenuSections(), id, false);
+        return insertExisting(sections, toItem(id, request), request.sectionId());
+    }
+
+    public List<MenuSectionResponse> deleteItem(String id) {
+        List<MenuSectionResponse> sections = removeItem(findMenuSections(), id, true);
+        overridesStore.writeSections(sections);
+        return sections;
+    }
+
+    private List<MenuSectionResponse> insertExisting(List<MenuSectionResponse> sections, MenuItemResponse item, String sectionId) {
+        List<MenuSectionResponse> copy = new java.util.ArrayList<>(sections);
+        for (int i = 0; i < copy.size(); i++) if (copy.get(i).id().equals(sectionId)) {
+            MenuSectionResponse section = copy.get(i); List<MenuItemResponse> items = new java.util.ArrayList<>(section.items()); items.add(item);
+            copy.set(i, new MenuSectionResponse(section.id(), section.title(), section.description(), items)); overridesStore.writeSections(copy); return copy;
+        }
+        throw new IllegalArgumentException("Categoria sconosciuta: " + sectionId);
+    }
+
+    private static List<MenuSectionResponse> removeItem(List<MenuSectionResponse> sections, String id, boolean failIfMissing) {
+        List<MenuSectionResponse> copy = new java.util.ArrayList<>(); boolean removed = false;
+        for (MenuSectionResponse section : sections) { List<MenuItemResponse> items = section.items().stream().filter(item -> !item.id().equals(id)).toList(); removed |= items.size() != section.items().size(); copy.add(new MenuSectionResponse(section.id(), section.title(), section.description(), items)); }
+        if (!removed && failIfMissing) throw new IllegalArgumentException("Piatto sconosciuto: " + id); return copy;
+    }
+    private static MenuItemResponse toItem(String id, MenuItemRequest r) { return new MenuItemResponse(id, r.name().trim(), nullToEmpty(r.subtitle()), nullToEmpty(r.description()), r.notes() == null ? List.of() : r.notes().stream().filter(n -> !n.isBlank()).map(String::trim).toList(), r.price()); }
+    private static String nullToEmpty(String value) { return value == null ? "" : value.trim(); }
+    private static String slug(String value) { return value.toLowerCase(java.util.Locale.ROOT).replaceAll("[^a-z0-9]+", "-").replaceAll("(^-|-$)", ""); }
 
     public List<MenuSectionResponse> defaultMenuSections() {
         return List.of(
@@ -431,7 +481,7 @@ public class MenuService {
     public Map<String, String> defaultPrices() {
         return defaultMenuSections().stream()
                 .flatMap(section -> section.items().stream())
-                .collect(Collectors.toMap(MenuItemResponse::id, MenuItemResponse::price, (first, second) -> first,
+                .collect(Collectors.toMap(MenuItemResponse::id, item -> item.price() == null ? "" : item.price().toPlainString(), (first, second) -> first,
                         LinkedHashMap::new));
     }
 
@@ -448,7 +498,7 @@ public class MenuService {
                         section.description(),
                         section.items().stream().map(item -> {
                             String price = prices.get(item.id());
-                            return price == null || price.equals(item.price())
+                            return price == null || price.equals(item.price() == null ? "" : item.price().toPlainString())
                                     ? item
                                     : new MenuItemResponse(item.id(), item.name(), item.subtitle(),
                                             item.description(), item.notes(), price);

@@ -14,6 +14,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.List;
 import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,12 +83,31 @@ public class MenuOverridesStore {
         }
     }
 
+    /** A saved full catalogue takes precedence; legacy price-only files remain supported. */
+    public List<MenuSectionResponse> readSections() {
+        if (!Files.isRegularFile(file)) return List.of();
+        try {
+            MenuOverridesDocument document = objectMapper.readValue(file.toFile(), MenuOverridesDocument.class);
+            return document == null || document.sections() == null ? List.of() : document.sections();
+        } catch (IOException e) {
+            log.warn("Could not read menu catalogue from {}", file, e);
+            return List.of();
+        }
+    }
+
+    public synchronized void writeSections(List<MenuSectionResponse> sections) {
+        writeDocument(new MenuOverridesDocument(Instant.now(), Map.of(), sections));
+    }
+
     /**
      * Replaces the overrides file with the given prices, writing atomically so a crash mid-write
      * cannot leave a truncated file behind.
      */
     public synchronized void writePrices(Map<String, String> prices) {
-        MenuOverridesDocument document = new MenuOverridesDocument(Instant.now(), new TreeMap<>(prices));
+        writeDocument(new MenuOverridesDocument(Instant.now(), new TreeMap<>(prices), List.of()));
+    }
+
+    private void writeDocument(MenuOverridesDocument document) {
 
         try {
             Path parent = file.getParent();
@@ -103,7 +123,7 @@ public class MenuOverridesStore {
                 Files.deleteIfExists(temp);
             }
 
-            log.info("Menu price overrides saved to {} ({} entries)", file, prices.size());
+            log.info("Menu catalogue saved to {}", file);
         } catch (IOException e) {
             throw new UncheckedIOException("Could not write menu price overrides to " + file, e);
         }

@@ -177,7 +177,7 @@ class MenuServiceTest {
                 .flatMap(section -> section.items().stream())
                 .filter(item -> item.id().equals(itemId))
                 .findFirst()
-                .map(MenuItemResponse::price)
+                .map(item -> item.price() == null ? "" : item.price().stripTrailingZeros().toPlainString())
                 .orElseThrow(() -> new AssertionError("Item not found: " + itemId));
     }
 }
