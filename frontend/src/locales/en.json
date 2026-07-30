@@ -2,12 +2,12 @@
   "nav": {
     "menu": "Menu",
     "antipasti": "Starters",
-    "sfizi": "Bites",
+    "sfizi": "Small plates",
     "insalatone": "Salads",
-    "primi_terra": "Pasta (land)",
-    "primi_mare": "Pasta (sea)",
-    "secondi_terra": "Mains (land)",
-    "secondi_mare": "Mains (sea)",
+    "primi_terra": "Pasta dishes",
+    "primi_mare": "Seafood pasta",
+    "secondi_terra": "Meat mains",
+    "secondi_mare": "Seafood mains",
     "dolci": "Desserts",
     "bevande": "Drinks",
     "gin": "Gin",
@@ -18,20 +18,26 @@
     "contatti": "Contact"
   },
   "hero": {
-    "eyebrow": "Restaurant — land & sea cuisine",
+    "eyebrow": "Restaurant — seafood and meat cuisine",
     "copy": "Refined dishes, selected wines and a warm, elegant atmosphere for unforgettable evenings.",
-    "button": "Explore the menu"
+    "button": "Explore the menu",
+    "scroll_down": "Scroll to discover the menu"
   },
   "menu": {
     "title": "Our selection.",
     "fallback_note": "Backend unreachable: showing local menu.",
+    "aria": {
+      "scroll_left": "Scroll categories left",
+      "scroll_right": "Scroll categories right",
+      "notes": "Notes for {{name}}"
+    },
     "sections": {
       "antipasti": {
         "title": "Starters",
         "description": "A selection of fresh starters from land and sea."
       },
       "sfizi": {
-        "title": "Bites",
+        "title": "Small plates",
         "description": "Small plates and nibbles to share."
       },
       "insalatone": {
@@ -39,19 +45,19 @@
         "description": "Fresh and nourishing salads."
       },
       "primi-terra": {
-        "title": "Pasta (land)",
+        "title": "Pasta dishes",
         "description": "Fresh pasta and gnocchi with the flavours of the land."
       },
       "secondi-terra": {
-        "title": "Mains (land)",
+        "title": "Meat mains",
         "description": "Selected meats and traditional preparations."
       },
       "primi-mare": {
-        "title": "Pasta (sea)",
+        "title": "Seafood pasta",
         "description": "Fresh pasta with the finest seafood."
       },
       "secondi-mare": {
-        "title": "Mains (sea)",
+        "title": "Seafood mains",
         "description": "Fresh fish and seafood, carefully prepared."
       },
       "dolci": {
@@ -68,7 +74,7 @@
       },
       "cocktails": {
         "title": "Cocktails",
-        "description": "Classics and house proposals."
+        "description": "Classic cocktails and our house creations."
       },
       "amari": {
         "title": "Digestifs",
@@ -88,7 +94,7 @@
       },
       "vini-rossi": {
         "title": "Red wines",
-        "description": "Full-bodied and structured reds, Puglian and national."
+        "description": "Full-bodied, structured reds from Puglia and across Italy."
       },
       "vini-bio": {
         "title": "Organic wines",
@@ -98,11 +104,73 @@
         "title": "Prosecco & Champagne",
         "description": "Bubbles for every occasion."
       }
+    },
+    "items": {
+      "crudo_di_mare": { "name": "Raw seafood", "subtitle": "On request" },
+      "antipasto_di_terra": { "name": "Land starter", "subtitle": "For 2 people" },
+      "mare_e_monti": { "name": "Sea and mountains" },
+      "veli_crudo_mojito": { "name": "Mojito-marinated raw seafood" },
+      "salmone_affumicato": { "name": "Smoked salmon" },
+      "bresaola_manzo": { "name": "Beef bresaola" },
+      "prosciutto_crudo": { "name": "Cured ham" },
+      "crudo_iberico": { "name": "Iberian cured ham" },
+      "patatine_fritte": { "name": "French fries" },
+      "verdure_grigliate": { "name": "Grilled vegetables" },
+      "polpette": { "name": "Meatballs" },
+      "pettoline": { "name": "Pettoline fritters" },
+      "carpaccio_tonno_rosa": { "name": "Pink tuna carpaccio" },
+      "insalatona_verde": { "name": "Mixed green salad" },
+      "insalatona_proteica": { "name": "Protein salad", "description": "Chicken strips, tomato, Grana cheese and rocket" },
+      "insalatona_gamberoni": { "name": "King prawn salad" },
+      "insalatona_mare": { "name": "Seafood salad" },
+      "tagliatelle_porcini": { "name": "Tagliatelle with porcini mushrooms" },
+      "orecchiette_pomodoro": { "name": "Orecchiette with fresh tomato" },
+      "gnocchi_pomodoro": { "name": "Gnocchi with fresh tomato" },
+      "tagliolini_salsiccia": { "name": "Tagliolini with leek cream and Norcia sausage" },
+      "orecchiette_cime": { "name": "Orecchiette with turnip tops", "description": "Senatore Cappelli wheat, Cantabrian anchovies and stracciatella" },
+      "filetto_tartufo": { "name": "Beef fillet with truffle or porcini cream", "subtitle": "Served with a side dish" },
+      "entrecote_scottona": { "name": "Scottona beef entrecôte", "subtitle": "Served with a side dish, approx. 250 g" },
+      "tagliata_pollo": { "name": "Sliced chicken with Grana cheese, rocket and tomato" },
+      "costine_messicana": { "name": "Mexican-style ribs" },
+      "tartare_manzo": { "name": "Beef tartare" },
+      "carpaccio_manzo": { "name": "Beef carpaccio" },
+      "tagliatelle_seppia": { "name": "Tagliatelle with cuttlefish" },
+      "tagliolini_gambero": { "name": "Tagliolini aglio e olio with hunchback prawn tartare" },
+      "tortelloni_astice": { "name": "Lobster and king crab tortelloni with shellfish cream" },
+      "spaghetti_ostriche": { "name": "Spaghetti with oysters" },
+      "gnocchi_cozze": { "name": "Gnocchi with mussels" },
+      "panino_polpo": { "name": "Octopus tentacle sandwich" },
+      "tagliolini_astice": { "name": "Tagliolini with half a lobster and fresh tomato" },
+      "pasta_vongole": { "name": "Pasta with clams" },
+      "gamberoni_griglia": { "name": "Grilled king prawns", "subtitle": "Served with a side dish" },
+      "filetto_pesce_spada": { "name": "Swordfish fillet", "subtitle": "Served with a side dish" },
+      "frittura_mista": { "name": "Mixed fried seafood" },
+      "tartare_tonno": { "name": "Tuna tartare", "subtitle": "Served with a side dish" },
+      "polpo_burratina": { "name": "Octopus tentacle with smoked burratina and green pea cream" },
+      "scottata_tonno": { "name": "Seared tuna" },
+      "cremoso_caffe": { "name": "Coffee cream dessert" },
+      "cremoso_frutti_bosco": { "name": "Berry cream dessert" },
+      "cremoso_pistacchio": { "name": "Pistachio cream dessert" },
+      "acqua": { "name": "Still / sparkling water" },
+      "calice_vino": { "name": "Glass of wine" }, "calice_prosecco": { "name": "Glass of Prosecco" },
+      "calice_franciacorta": { "name": "Glass of Franciacorta" }, "calice_champagne": { "name": "Glass of Champagne" },
+      "succhi_frutta": { "name": "Fruit juices" }, "the_pesca_limone": { "name": "Peach / lemon iced tea" },
+      "san_bitter": { "name": "White / red San Bitter" }, "acqua_tonica": { "name": "Tonic water" },
+      "campari_prosecco": { "name": "Campari and Prosecco" }, "mojito_scuro": { "name": "Dark Mojito" },
+      "negroni_sbagliato": { "name": "Negroni Sbagliato" }, "quattro_bianchi": { "name": "Four Whites", "subtitle": "Strawberry or lemon" },
+      "fernet_branca": { "name": "Fernet Branca / Mint" }, "caffe_borghetti": { "name": "Borghetti coffee liqueur" }, "vena_caffe": { "name": "Vena coffee liqueur" },
+      "martini": { "name": "Martini Bianco / Rosso / Dry" }, "shot_2cl": { "name": "Shot with standard spirits" },
+      "trebbiano_bio": { "name": "Organic vegan Trebbiano d'Abruzzo" }, "passerina_bio": { "name": "Organic vegan Passerina" },
+      "pecorino_bio": { "name": "Organic Pecorino" }, "castel_monte_bio_bianco": { "name": "Organic Castel del Monte" },
+      "vitalba_bio": { "name": "Organic Vitalba" }, "dharma_bio": { "name": "Organic Dharma" },
+      "castel_monte_bio_rosato": { "name": "Organic Castel del Monte" }, "castel_monte_bio_rosso": { "name": "Organic Castel del Monte" },
+      "vini_labels": { "bianco": "White", "rosato": "Rosé", "rosso": "Red", "spumante": "Sparkling wine", "prosecco": "Prosecco", "champagne": "Champagne" },
+      "distillati_labels": { "rum": "Rum" }
     }
   },
   "experience": {
-    "eyebrow": "The place",
-    "title": "A bistrot in the heart of the city.",
+    "eyebrow": "The restaurant",
+    "title": "A bistro in the heart of the city.",
     "text": "Il Bistrò dei Dotti is a place where cuisine meets conviviality. Carefully crafted dishes, fresh seasonal ingredients and a wine selection designed to accompany every moment of your evening."
   },
   "contacts": {
@@ -110,5 +178,19 @@
     "title": "Open every day",
     "hours": "18:00 - 01:00",
     "phone": "+39 351 0449553"
+  },
+  "language": {
+    "switch_to": "Switch to {{language}}"
+  },
+  "footer": {
+    "credit": "Crafted by Davide Sciacca"
+  },
+  "accessibility": {
+    "main_header": "Main header",
+    "brand": "Il Bistrò dei Dotti",
+    "scroll_menu_left": "Scroll menu left",
+    "scroll_menu_right": "Scroll menu right",
+    "main_navigation": "Main navigation",
+    "primary_actions": "Primary actions"
   }
 }

@@ -20,11 +20,17 @@
   "hero": {
     "eyebrow": "Ristorante — cucina di mare e di terra",
     "copy": "Piatti ricercati, vini selezionati e un'atmosfera calda e raffinata per serate indimenticabili.",
-    "button": "Scopri il menu"
+    "button": "Scopri il menu",
+    "scroll_down": "Scorri per scoprire il menu"
   },
   "menu": {
     "title": "La nostra selezione.",
     "fallback_note": "Backend non raggiungibile: stai vedendo il menu locale.",
+    "aria": {
+      "scroll_left": "Scorri categorie a sinistra",
+      "scroll_right": "Scorri categorie a destra",
+      "notes": "Note di {{name}}"
+    },
     "sections": {
       "antipasti": {
         "title": "Antipasti",
@@ -110,5 +116,19 @@
     "title": "Tutti i giorni, 7 su 7",
     "hours": "18:00 - 01:00",
     "phone": "+39 351 0449553"
+  },
+  "language": {
+    "switch_to": "Passa a {{language}}"
+  },
+  "footer": {
+    "credit": "Realizzato da Davide Sciacca"
+  },
+  "accessibility": {
+    "main_header": "Intestazione principale",
+    "brand": "Il Bistrò dei Dotti",
+    "scroll_menu_left": "Scorri menu a sinistra",
+    "scroll_menu_right": "Scorri menu a destra",
+    "main_navigation": "Navigazione principale",
+    "primary_actions": "Azioni principali"
   }
 }

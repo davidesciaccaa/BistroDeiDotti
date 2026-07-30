@@ -24,13 +24,6 @@ export function Hero() {
     if (navRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = navRef.current;
 
-      console.log({
-        scrollLeft,
-        scrollWidth,
-        clientWidth,
-        overflow: scrollWidth > clientWidth
-      });
-
       setShowLeftIndicator(scrollLeft > 10);
       setShowRightIndicator(scrollWidth > clientWidth && scrollLeft < scrollWidth - clientWidth - 10);
     }
@@ -55,8 +48,8 @@ export function Hero() {
 
   return (
     <section className="hero" style={{ '--hero-image': `url(${heroImage})` }}>
-      <header className="site-header" aria-label="Intestazione principale">
-        <a className="brand" href="#top" aria-label="Il Bistrò dei Dotti">
+      <header className="site-header" aria-label={t('accessibility.main_header')}>
+        <a className="brand" href="#top" aria-label={t('accessibility.brand')}>
           Il Bistr&ograve; dei <span className="brand-v">Dotti</span>
         </a>
         <div className="header-actions">
@@ -65,12 +58,12 @@ export function Hero() {
               <button
               className="nav-scroll-hint nav-scroll-hint--left"
               onClick={() => scrollNav('left')}
-              aria-label="Scorri menu a sinistra"
+              aria-label={t('accessibility.scroll_menu_left')}
             >
               <span className="nav-arrow">‹</span>
             </button>)}
 
-            <nav className="site-nav" aria-label="Navigazione principale" ref={navRef}>
+            <nav className="site-nav" aria-label={t('accessibility.main_navigation')} ref={navRef}>
               <a href="#antipasti">{t('nav.antipasti')}</a>
               <a href="#sfizi">{t('nav.sfizi')}</a>
               <a href="#insalatone">{t('nav.insalatone')}</a>
@@ -91,7 +84,7 @@ export function Hero() {
                 <button
                   className="nav-scroll-hint nav-scroll-hint--right"
                   onClick={() => scrollNav('right')}
-                  aria-label="Scorri menu a destra"
+                  aria-label={t('accessibility.scroll_menu_right')}
                 >
                   <span className="nav-arrow">›</span>
                 </button>
@@ -107,14 +100,14 @@ export function Hero() {
         <p className="hero__copy">
           {t('hero.copy')}
         </p>
-        <div className="hero__actions" aria-label="Azioni principali">
+        <div className="hero__actions" aria-label={t('accessibility.primary_actions')}>
           <a className="button button--primary" href="#antipasti">
             {t('hero.button')}
           </a>
         </div>
       </div>
 
-      <a href="#menu" className="hero__scroll-down" aria-label={t('hero.scroll_down', { defaultValue: 'Scorri per scoprire il menu' })}>
+      <a href="#menu" className="hero__scroll-down" aria-label={t('hero.scroll_down')}>
         <div className="mouse-icon">
           <div className="wheel"></div>
         </div>

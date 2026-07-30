@@ -408,7 +408,7 @@ function App() {
             <button
               className="scroll-hint scroll-hint--left"
               onClick={() => scrollCategoryNav('left')}
-              aria-label="Scorri categorie a sinistra"
+              aria-label={t('menu.aria.scroll_left')}
             >
               ‹
             </button>
@@ -428,7 +428,7 @@ function App() {
             <button
               className="scroll-hint scroll-hint--right"
               onClick={() => scrollCategoryNav('right')}
-              aria-label="Scorri categorie a destra"
+              aria-label={t('menu.aria.scroll_right')}
             >
               ›
             </button>
@@ -486,7 +486,7 @@ function App() {
             rel="noopener noreferrer"
             className="footer-credit"
           >
-            Crafted by Davide Sciacca
+            {t('footer.credit')}
           </a>
         </footer>
       </div>

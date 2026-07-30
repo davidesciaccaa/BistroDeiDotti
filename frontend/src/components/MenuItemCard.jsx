@@ -83,7 +83,7 @@ export function MenuItemCard({ item }) {
       )}
 
       {notes && notes.length > 0 && (
-        <ul className="note-list-editorial" aria-label={`Note di ${name}`}>
+        <ul className="note-list-editorial" aria-label={t('menu.aria.notes', { name })}>
           {notes.map((note) => (
             <li key={note}>{note}</li>
           ))}

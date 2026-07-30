@@ -2,17 +2,17 @@
   "nav": {
     "menu": "Speisekarte",
     "antipasti": "Vorspeisen",
-    "sfizi": "Häppchen",
+    "sfizi": "Kleine Gerichte",
     "insalatone": "Salate",
-    "primi_terra": "Pasta (Land)",
-    "primi_mare": "Pasta (Meer)",
-    "secondi_terra": "Hauptgerichte (Land)",
-    "secondi_mare": "Hauptgerichte (Meer)",
+    "primi_terra": "Pasta-Gerichte",
+    "primi_mare": "Pasta mit Meeresfrüchten",
+    "secondi_terra": "Fleisch-Hauptgerichte",
+    "secondi_mare": "Fisch-Hauptgerichte",
     "dolci": "Desserts",
     "bevande": "Getränke",
     "gin": "Gin",
     "cocktails": "Cocktails",
-    "amari": "Digestifs",
+    "amari": "Amari",
     "distillati": "Spirituosen",
     "vini": "Weine",
     "contatti": "Kontakt"
@@ -20,18 +20,24 @@
   "hero": {
     "eyebrow": "Restaurant — Land- und Meeresküche",
     "copy": "Raffinierte Gerichte, ausgewählte Weine und eine warme, elegante Atmosphäre für unvergessliche Abende.",
-    "button": "Speisekarte entdecken"
+    "button": "Speisekarte entdecken",
+    "scroll_down": "Scrollen, um die Speisekarte zu entdecken"
   },
   "menu": {
     "title": "Unsere Auswahl.",
     "fallback_note": "Backend nicht erreichbar: lokale Speisekarte wird angezeigt.",
+    "aria": {
+      "scroll_left": "Kategorien nach links scrollen",
+      "scroll_right": "Kategorien nach rechts scrollen",
+      "notes": "Hinweise zu {{name}}"
+    },
     "sections": {
       "antipasti": {
         "title": "Vorspeisen",
         "description": "Eine Auswahl frischer Vorspeisen aus Land und Meer."
       },
       "sfizi": {
-        "title": "Häppchen",
+        "title": "Kleine Gerichte",
         "description": "Kleine Köstlichkeiten zum Teilen."
       },
       "insalatone": {
@@ -39,19 +45,19 @@
         "description": "Frische und nahrhafte Salate."
       },
       "primi-terra": {
-        "title": "Pasta (Land)",
+        "title": "Pasta-Gerichte",
         "description": "Frische Pasta und Gnocchi mit den Aromen des Landes."
       },
       "secondi-terra": {
-        "title": "Hauptgerichte (Land)",
+        "title": "Fleisch-Hauptgerichte",
         "description": "Ausgewählte Fleischgerichte und traditionelle Zubereitungen."
       },
       "primi-mare": {
-        "title": "Pasta (Meer)",
+        "title": "Pasta mit Meeresfrüchten",
         "description": "Frische Pasta mit den besten Meeresfrüchten."
       },
       "secondi-mare": {
-        "title": "Hauptgerichte (Meer)",
+        "title": "Fisch-Hauptgerichte",
         "description": "Frische Fische und Meeresfrüchte, sorgfältig zubereitet."
       },
       "dolci": {
@@ -71,8 +77,8 @@
         "description": "Klassiker und unsere Hauskreationen."
       },
       "amari": {
-        "title": "Digestifs",
-        "description": "Eine Auswahl italienischer Digestifs zum Abschluss des Abends."
+        "title": "Amari",
+        "description": "Eine Auswahl italienischer Amari zum Abschluss des Abends."
       },
       "distillati": {
         "title": "Spirituosen",
@@ -96,8 +102,51 @@
       },
       "prosecco": {
         "title": "Prosecco & Champagne",
-        "description": "Perlweine für jeden Anlass."
+        "description": "Prickelndes für jeden Anlass."
       }
+    },
+    "items": {
+      "crudo_di_mare": { "name": "Rohe Meeresfrüchte", "subtitle": "Auf Anfrage" },
+      "antipasto_di_terra": { "name": "Vorspeise vom Land", "subtitle": "Für 2 Personen" },
+      "mare_e_monti": { "name": "Meer und Berge" },
+      "veli_crudo_mojito": { "name": "Rohe Meeresfrüchte mit Mojito" },
+      "salmone_affumicato": { "name": "Geräucherter Lachs" }, "bresaola_manzo": { "name": "Rindfleisch-Bresaola" },
+      "prosciutto_crudo": { "name": "Rohschinken" }, "crudo_iberico": { "name": "Iberischer Rohschinken" },
+      "patatine_fritte": { "name": "Pommes frites" }, "verdure_grigliate": { "name": "Gegrilltes Gemüse" },
+      "polpette": { "name": "Fleischbällchen" }, "pettoline": { "name": "Pettoline-Krapfen" },
+      "carpaccio_tonno_rosa": { "name": "Carpaccio vom rosa Thunfisch" },
+      "insalatona_verde": { "name": "Gemischter grüner Salat" },
+      "insalatona_proteica": { "name": "Protein-Salat", "description": "Hähnchenstreifen, Tomate, Grana und Rucola" },
+      "insalatona_gamberoni": { "name": "Salat mit Riesengarnelen" }, "insalatona_mare": { "name": "Meeresfrüchtesalat" },
+      "tagliatelle_porcini": { "name": "Tagliatelle mit Steinpilzen" }, "orecchiette_pomodoro": { "name": "Orecchiette mit frischen Tomaten" },
+      "gnocchi_pomodoro": { "name": "Gnocchi mit frischen Tomaten" },
+      "tagliolini_salsiccia": { "name": "Tagliolini mit Lauchcreme und Norcia-Wurst" },
+      "orecchiette_cime": { "name": "Orecchiette mit Stängelkohl", "description": "Senatore-Cappelli-Weizen, kantabrische Sardellen und Stracciatella" },
+      "filetto_tartufo": { "name": "Rinderfilet mit Trüffel- oder Steinpilzcreme", "subtitle": "Mit Beilage" },
+      "entrecote_scottona": { "name": "Entrecôte vom Scottona-Rind", "subtitle": "Mit Beilage, ca. 250 g" },
+      "tagliata_pollo": { "name": "Hähnchen-Tagliata mit Grana, Rucola und Tomate" }, "costine_messicana": { "name": "Rippchen nach mexikanischer Art" },
+      "tartare_manzo": { "name": "Rindertatar" }, "carpaccio_manzo": { "name": "Rindercarpaccio" },
+      "tagliatelle_seppia": { "name": "Tagliatelle mit Sepia" }, "tagliolini_gambero": { "name": "Tagliolini aglio e olio mit Höckergarnelen-Tatar" },
+      "tortelloni_astice": { "name": "Tortelloni mit Hummer und Königskrabbe in Krustentiercreme" }, "spaghetti_ostriche": { "name": "Spaghetti mit Austern" },
+      "gnocchi_cozze": { "name": "Gnocchi mit Miesmuscheln" }, "panino_polpo": { "name": "Sandwich mit Oktopustentakel" },
+      "tagliolini_astice": { "name": "Tagliolini mit einem halben Hummer und frischen Tomaten" }, "pasta_vongole": { "name": "Pasta mit Venusmuscheln" },
+      "gamberoni_griglia": { "name": "Gegrillte Riesengarnelen", "subtitle": "Mit Beilage" }, "filetto_pesce_spada": { "name": "Schwertfischfilet", "subtitle": "Mit Beilage" },
+      "frittura_mista": { "name": "Gemischte frittierte Meeresfrüchte" }, "tartare_tonno": { "name": "Thunfischtatar", "subtitle": "Mit Beilage" },
+      "polpo_burratina": { "name": "Oktopustentakel auf geräucherter Burratina mit grüner Erbsencreme" }, "scottata_tonno": { "name": "Kurz gebratener Thunfisch" },
+      "cremoso_caffe": { "name": "Cremiges Kaffeedessert" }, "cremoso_frutti_bosco": { "name": "Cremiges Beerendessert" }, "cremoso_pistacchio": { "name": "Cremiges Pistaziendessert" },
+      "acqua": { "name": "Stilles / prickelndes Wasser" }, "calice_vino": { "name": "Glas Wein" }, "calice_prosecco": { "name": "Glas Prosecco" },
+      "calice_franciacorta": { "name": "Glas Franciacorta" }, "calice_champagne": { "name": "Glas Champagner" }, "succhi_frutta": { "name": "Fruchtsäfte" },
+      "the_pesca_limone": { "name": "Eistee Pfirsich / Zitrone" }, "san_bitter": { "name": "San Bitter weiß / rot" }, "acqua_tonica": { "name": "Tonic Water" },
+      "campari_prosecco": { "name": "Campari und Prosecco" }, "mojito_scuro": { "name": "Dunkler Mojito" }, "negroni_sbagliato": { "name": "Negroni Sbagliato" },
+      "quattro_bianchi": { "name": "Vier Weiße", "subtitle": "Erdbeere oder Zitrone" }, "fernet_branca": { "name": "Fernet Branca / Minze" },
+      "caffe_borghetti": { "name": "Borghetti Kaffeelikör" }, "vena_caffe": { "name": "Vena Kaffeelikör" }, "martini": { "name": "Martini Bianco / Rosso / Dry" },
+      "shot_2cl": { "name": "Shot mit Basis-Spirituosen" },
+      "trebbiano_bio": { "name": "Bio-veganer Trebbiano d'Abruzzo" }, "passerina_bio": { "name": "Bio-vegane Passerina" },
+      "pecorino_bio": { "name": "Bio-Pecorino" }, "castel_monte_bio_bianco": { "name": "Bio-Castel del Monte" },
+      "vitalba_bio": { "name": "Bio-Vitalba" }, "dharma_bio": { "name": "Bio-Dharma" },
+      "castel_monte_bio_rosato": { "name": "Bio-Castel del Monte" }, "castel_monte_bio_rosso": { "name": "Bio-Castel del Monte" },
+      "vini_labels": { "bianco": "Weiß", "rosato": "Rosé", "rosso": "Rot", "spumante": "Schaumwein", "prosecco": "Prosecco", "champagne": "Champagner" },
+      "distillati_labels": { "rum": "Rum" }
     }
   },
   "experience": {
@@ -110,5 +159,19 @@
     "title": "Täglich geöffnet",
     "hours": "18:00 - 01:00",
     "phone": "+39 351 0449553"
+  },
+  "language": {
+    "switch_to": "Zu {{language}} wechseln"
+  },
+  "footer": {
+    "credit": "Erstellt von Davide Sciacca"
+  },
+  "accessibility": {
+    "main_header": "Hauptkopfzeile",
+    "brand": "Il Bistrò dei Dotti",
+    "scroll_menu_left": "Menü nach links scrollen",
+    "scroll_menu_right": "Menü nach rechts scrollen",
+    "main_navigation": "Hauptnavigation",
+    "primary_actions": "Primäre Aktionen"
   }
 }
