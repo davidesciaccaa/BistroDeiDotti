@@ -1,5 +1,6 @@
 package com.angolodivino.menu;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -9,6 +10,7 @@ public record MenuItemResponse(
         String subtitle,
         String description,
         List<String> notes,
+        @JsonDeserialize(using = PriceDeserializer.class)
         BigDecimal price
 ) {
     public MenuItemResponse {
@@ -18,10 +20,10 @@ public record MenuItemResponse(
 
     public static BigDecimal parsePrice(String price) {
         if (price == null || price.isBlank() || "-".equals(price.trim())) return null;
-        String numeric = price.replaceAll("[^0-9,.-]", "").replace(',', '.');
-        if (numeric.indexOf('.') != numeric.lastIndexOf('.')) {
+        String numeric = price.trim().replace("€", "").trim().replace(',', '.');
+        if (!numeric.matches("\\d+(?:\\.\\d{1,2})?")) {
             throw new IllegalArgumentException("Formato prezzo non convertibile: " + price);
         }
-        return numeric.isBlank() ? null : new BigDecimal(numeric);
+        return new BigDecimal(numeric);
     }
 }

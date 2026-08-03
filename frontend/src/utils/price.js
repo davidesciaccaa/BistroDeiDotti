@@ -7,7 +7,7 @@ export function parsePriceInput(value) {
 
 export function formatEuro(value) {
   const parsed = typeof value === 'number' ? value : parsePriceInput(value);
-  if (parsed === null || Number.isNaN(parsed)) return '';
+  if (parsed === null || !Number.isFinite(parsed) || parsed < 0) return '';
   return `${parsed.toLocaleString('it-IT', {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2

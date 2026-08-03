@@ -1,23 +1,10 @@
 import { useEffect, useState } from 'react';
 import { parsePriceInput } from '../utils/price.js';
+import { createMenuItemDraft } from './menuItemDraft.js';
 import { PriceInput } from './PriceField.jsx';
 
-const emptyItem = {
-  name: '',
-  subtitle: '',
-  description: '',
-  notes: [],
-  price: ''
-};
-
 export function MenuItemForm({ sections, initialSectionId, item, onCancel, onSubmit, isSaving }) {
-  const [form, setForm] = useState(() => ({
-    ...emptyItem,
-    ...item,
-    sectionId: initialSectionId,
-    price: item?.price == null ? '' : String(item.price),
-    notesText: (item?.notes ?? []).join('\n')
-  }));
+  const [form, setForm] = useState(() => createMenuItemDraft(item, initialSectionId));
   const [error, setError] = useState(null);
 
   useEffect(() => {

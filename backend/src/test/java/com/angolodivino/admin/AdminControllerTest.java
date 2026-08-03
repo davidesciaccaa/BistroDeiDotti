@@ -88,6 +88,21 @@ class AdminControllerTest {
     }
 
     @Test
+    void decimalPricePatchUpdatesPublicMenuAsANumber() throws Exception {
+        String token = login();
+        mockMvc.perform(patch("/api/admin/menu/prices")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"prices\":{\"negroni\":11.50}}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].items[?(@.id == 'negroni')].price", is(List.of(11.5))));
+
+        mockMvc.perform(get("/api/menu/sections"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].items[?(@.id == 'negroni')].price", is(List.of(11.5))));
+    }
+
+    @Test
     void createsUpdatesAndDeletesCompleteMenuItems() throws Exception {
         String token = login();
         String body = mockMvc.perform(post("/api/admin/menu/items")
@@ -127,6 +142,15 @@ class AdminControllerTest {
                                 {"sectionId":"antipasti","name":"Non valido","subtitle":"",
                                  "description":"","notes":[],"price":"30 €"}
                                 """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void rejectsNullInTheNumericPricePatch() throws Exception {
+        mockMvc.perform(patch("/api/admin/menu/prices")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + login())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"prices\":{\"negroni\":null}}"))
                 .andExpect(status().isBadRequest());
     }
 

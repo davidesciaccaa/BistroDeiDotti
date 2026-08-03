@@ -87,6 +87,16 @@ class MenuServiceTest {
     }
 
     @Test
+    void parsesOnlyUnambiguousLegacyPrices() {
+        assertThat(MenuItemResponse.parsePrice("12 €")).isEqualByComparingTo("12");
+        assertThat(MenuItemResponse.parsePrice("2,50 €")).isEqualByComparingTo("2.5");
+        assertThat(MenuItemResponse.parsePrice("-")).isNull();
+        assertThatThrownBy(() -> MenuItemResponse.parsePrice("5 € / 20 €"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("5 € / 20 €");
+    }
+
+    @Test
     void rejectsUnknownCategoriesAndItemsWithoutChangingTheFile() throws Exception {
         byte[] before = java.nio.file.Files.readAllBytes(store.menuFile());
         assertThatThrownBy(() -> service.createItem(request("missing", "No", "2")))

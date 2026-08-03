@@ -8,6 +8,7 @@ import {
   updateAdminMenuItem
 } from '../api/adminApi.js';
 import { formatEuro } from '../utils/price.js';
+import { cloneMenuItem } from '../utils/menu.js';
 import { MenuItemForm } from './MenuItemForm.jsx';
 import { PriceField } from './PriceField.jsx';
 
@@ -208,7 +209,7 @@ export function AdminMenuEditor({ onSignedOut }) {
                         </div>
                         <div className="admin-item__controls">
                           <PriceField value={value} isDirty={isDirty} itemName={item.name} subcategory={item.effectiveSubtitle} sectionTitle={section.title} onChange={(price) => changePrice(item.id, price)} />
-                          <button type="button" className="admin-button admin-button--ghost admin-button--compact" onClick={() => setEditor({ sectionId: section.id, item })}>Modifica</button>
+                          <button type="button" className="admin-button admin-button--ghost admin-button--compact" onClick={() => setEditor({ sectionId: section.id, item: cloneMenuItem(item) })}>Modifica</button>
                           <button type="button" className="admin-button admin-button--quiet admin-button--compact" disabled={deletingId === item.id} onClick={() => handleDelete(item)}>{deletingId === item.id ? 'Eliminazione…' : 'Elimina'}</button>
                         </div>
                       </div>

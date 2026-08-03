@@ -108,7 +108,7 @@ public class MenuService {
         return store.updateMenu(sections -> {
             List<MenuSectionResponse> updated = mutableSections(sections);
             for (Map.Entry<String, BigDecimal> entry : requestedPrices.entrySet()) {
-                if (entry.getValue() != null && entry.getValue().signum() < 0) {
+                if (entry.getValue() == null || entry.getValue().signum() < 0) {
                     throw new IllegalArgumentException("Prezzo non valido per: " + entry.getKey());
                 }
                 boolean found = false;

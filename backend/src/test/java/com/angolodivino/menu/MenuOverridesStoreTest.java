@@ -116,6 +116,38 @@ class MenuOverridesStoreTest {
     }
 
     @Test
+    void readsFormattedPricesFromAnExistingProductionMenuAsNumbers() throws Exception {
+        Path dataDirectory = tempDir.resolve("existing-data");
+        Files.createDirectories(dataDirectory);
+        Files.writeString(dataDirectory.resolve("menu.json"), """
+                {
+                  "updatedAt": "2026-01-01T00:00:00Z",
+                  "sections": [{
+                    "id": "bevande",
+                    "title": "Bevande",
+                    "description": "",
+                    "items": [{
+                      "id": "acqua",
+                      "name": "Acqua",
+                      "subtitle": "",
+                      "description": "",
+                      "notes": [],
+                      "price": "2,50 €"
+                    }]
+                  }]
+                }
+                """);
+
+        MenuOverridesStore store = storeAt(dataDirectory, NOW);
+        store.initialize();
+
+        MenuItemResponse item = store.readMenu().getFirst().items().getFirst();
+        assertThat(item.price()).isEqualByComparingTo("2.5");
+        assertThat(new com.fasterxml.jackson.databind.ObjectMapper().valueToTree(item).get("price").isNumber())
+                .isTrue();
+    }
+
+    @Test
     void createsOnlyOneDailyAndMonthlyBackupAndDoesNotOverwriteThem() throws Exception {
         MenuOverridesStore store = storeAt(tempDir.resolve("data"), NOW);
         store.initialize();

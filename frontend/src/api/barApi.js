@@ -1,3 +1,5 @@
+import { normalizeMenuSections } from '../utils/menu.js';
+
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/+$/, '');
 
 async function request(path) {
@@ -18,6 +20,6 @@ export function fetchApiStatus() {
   return request('/status');
 }
 
-export function fetchMenuSections() {
-  return request('/menu/sections');
+export async function fetchMenuSections() {
+  return normalizeMenuSections(await request('/menu/sections'));
 }

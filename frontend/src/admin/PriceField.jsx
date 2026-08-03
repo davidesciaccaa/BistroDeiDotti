@@ -48,6 +48,12 @@ export function PriceField({ value, isDirty, itemName, subcategory, sectionTitle
     setError(null);
   }
 
+  function cancel() {
+    setDraft(value == null ? '' : String(value));
+    setError(null);
+    setIsEditing(false);
+  }
+
   if (!isEditing) {
     return (
       <button
@@ -87,12 +93,15 @@ export function PriceField({ value, isDirty, itemName, subcategory, sectionTitle
               event.preventDefault();
               commit();
             }
-            if (event.key === 'Escape') setIsEditing(false);
+            if (event.key === 'Escape') {
+              event.preventDefault();
+              cancel();
+            }
           }}
         />
         <span className="admin-price-editor__currency" aria-hidden="true">€</span>
         <button type="button" className="admin-icon-button admin-icon-button--confirm" onClick={commit} aria-label={`Salva il prezzo di ${itemName}`}>✓</button>
-        <button type="button" className="admin-icon-button" onClick={() => setIsEditing(false)} aria-label="Annulla">×</button>
+        <button type="button" className="admin-icon-button" onClick={cancel} aria-label="Annulla">×</button>
       </div>
       {error && <p className="admin-price-editor__error" role="alert">{error}</p>}
     </div>
