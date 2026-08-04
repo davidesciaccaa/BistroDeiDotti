@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   adminLogout,
+  backfillAdminMenuTranslations,
   createAdminMenuItem,
   deleteAdminMenuItem,
   fetchAdminMenuSections,
@@ -28,6 +29,7 @@ export function AdminMenuEditor({ onSignedOut }) {
   const [isSavingPrices, setIsSavingPrices] = useState(false);
   const [editor, setEditor] = useState(null);
   const [isSavingItem, setIsSavingItem] = useState(false);
+  const [isBackfilling, setIsBackfilling] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
   const [feedback, setFeedback] = useState(null);
 
@@ -119,7 +121,9 @@ export function AdminMenuEditor({ onSignedOut }) {
       setEditor(null);
       setFeedback({
         type: 'success',
-        message: editor.item ? 'Piatto aggiornato correttamente.' : 'Piatto aggiunto correttamente.'
+        message: payload.autoTranslate
+          ? 'Traduzione completata. Il menù pubblico è aggiornato.'
+          : 'Traduzione manuale salvata. Il menù pubblico è aggiornato.'
       });
     } catch (error) {
       handleApiError(error, 'Operazione non riuscita');
@@ -147,6 +151,24 @@ export function AdminMenuEditor({ onSignedOut }) {
     }
   }
 
+  async function handleBackfill() {
+    if (isBackfilling || !window.confirm('Generare soltanto le traduzioni mancanti senza sovrascrivere quelle esistenti?')) return;
+    setIsBackfilling(true);
+    setFeedback(null);
+    try {
+      const result = await backfillAdminMenuTranslations();
+      setSections(result.sections);
+      setFeedback({
+        type: 'success',
+        message: `Traduzioni generate per ${result.updatedItems} voci; ${result.completeItems} erano già complete.`
+      });
+    } catch (error) {
+      handleApiError(error, 'Generazione non riuscita');
+    } finally {
+      setIsBackfilling(false);
+    }
+  }
+
   async function handleLogout() {
     if (pendingCount > 0 && !window.confirm('Ci sono prezzi non salvati. Uscire comunque?')) return;
     await adminLogout();
@@ -163,6 +185,10 @@ export function AdminMenuEditor({ onSignedOut }) {
           </div>
 
           <div className="admin-topbar__actions">
+            <button type="button" className="admin-button admin-button--ghost"
+              onClick={handleBackfill} disabled={isBackfilling || isSavingItem}>
+              {isBackfilling ? 'Generazione in corso…' : 'Genera traduzioni mancanti'}
+            </button>
             <span className={`admin-pending ${pendingCount > 0 ? 'admin-pending--active' : ''}`}>
               {pendingCount === 0 ? 'Tutto salvato' : `${pendingCount} ${pendingCount === 1 ? 'prezzo' : 'prezzi'} da salvare`}
             </span>

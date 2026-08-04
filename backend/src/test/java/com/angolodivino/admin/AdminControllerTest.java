@@ -66,6 +66,19 @@ class AdminControllerTest {
     }
 
     @Test
+    void automaticTranslationReturns503WhenServiceIsDisabled() throws Exception {
+        mockMvc.perform(post("/api/admin/menu/items")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + login())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"sectionId":"antipasti","name":"Da tradurre","subtitle":"","description":"",
+                                 "notes":[],"price":12,"autoTranslate":true}
+                                """))
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(jsonPath("$.error", is("translation_disabled")));
+    }
+
+    @Test
     void rejectsWrongPassword() throws Exception {
         mockMvc.perform(post("/api/admin/login").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"password\":\"wrong\"}"))

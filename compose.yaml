@@ -9,6 +9,8 @@ services:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
       MENU_DATA_DIRECTORY: /app/data
       MENU_LEGACY_OVERRIDES_FILE: /app/data/menu-overrides.json
+      MENU_TRANSLATION_ENABLED: ${MENU_TRANSLATION_ENABLED:-false}
+      DEEPL_AUTH_KEY: ${DEEPL_AUTH_KEY:-}
     volumes:
       - menu-data:/app/data
     ports:

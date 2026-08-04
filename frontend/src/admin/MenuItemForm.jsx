@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { parsePriceInput } from '../utils/price.js';
-import { createMenuItemDraft } from './menuItemDraft.js';
+import { createMenuItemDraft, menuItemPayload } from './menuItemDraft.js';
 import { PriceInput } from './PriceField.jsx';
 
 export function MenuItemForm({ sections, initialSectionId, item, onCancel, onSubmit, isSaving }) {
@@ -20,6 +20,17 @@ export function MenuItemForm({ sections, initialSectionId, item, onCancel, onSub
     setError(null);
   }
 
+  function changeTranslation(language, field, value) {
+    setForm((previous) => ({
+      ...previous,
+      translations: {
+        ...previous.translations,
+        [language]: { ...previous.translations[language], [field]: value }
+      }
+    }));
+    setError(null);
+  }
+
   async function submit(event) {
     event.preventDefault();
     const price = parsePriceInput(form.price);
@@ -31,14 +42,7 @@ export function MenuItemForm({ sections, initialSectionId, item, onCancel, onSub
       setError('Il prezzo deve essere un numero con al massimo due decimali.');
       return;
     }
-    await onSubmit({
-      sectionId: form.sectionId,
-      name: form.name.trim(),
-      subtitle: form.subtitle.trim(),
-      description: form.description.trim(),
-      notes: form.notesText.split('\n').map((note) => note.trim()).filter(Boolean),
-      price
-    });
+    await onSubmit({ ...menuItemPayload(form), price });
   }
 
   return (
@@ -55,6 +59,8 @@ export function MenuItemForm({ sections, initialSectionId, item, onCancel, onSub
         </div>
 
         <form className="admin-menu-form" onSubmit={submit}>
+          <fieldset className="admin-language-fields admin-field--full">
+            <legend>Italiano</legend>
           <label className="admin-field">
             <span className="admin-field__label">Nome *</span>
             <input className="admin-field__input" value={form.name} maxLength={160} autoFocus onChange={(event) => change('name', event.target.value)} />
@@ -76,6 +82,36 @@ export function MenuItemForm({ sections, initialSectionId, item, onCancel, onSub
             <span className="admin-field__label">Descrizione</span>
             <textarea className="admin-field__input admin-field__textarea" value={form.description} maxLength={1000} onChange={(event) => change('description', event.target.value)} />
           </label>
+          <label className="admin-field admin-field--full">
+            <span className="admin-field__label">Note</span>
+            <textarea className="admin-field__input admin-field__textarea" value={form.notesText} placeholder="Una nota per riga" onChange={(event) => change('notesText', event.target.value)} />
+          </label>
+          </fieldset>
+
+          <label className="admin-translation-toggle admin-field--full">
+            <input type="checkbox" checked={form.autoTranslate}
+              onChange={(event) => change('autoTranslate', event.target.checked)} />
+            <span>Traduci automaticamente dall&apos;italiano</span>
+          </label>
+          {form.autoTranslate && <p className="admin-field__help admin-field--full">English e Deutsch saranno generati al salvataggio.</p>}
+
+          {['en', 'de'].map((language) => (
+            <fieldset className="admin-language-fields admin-field--full" disabled={form.autoTranslate} key={language}>
+              <legend>{language === 'en' ? 'English' : 'Deutsch'}</legend>
+              <label className="admin-field"><span className="admin-field__label">Nome</span>
+                <input className="admin-field__input" maxLength={160} value={form.translations[language].name}
+                  onChange={(event) => changeTranslation(language, 'name', event.target.value)} /></label>
+              <label className="admin-field"><span className="admin-field__label">Sottotitolo</span>
+                <input className="admin-field__input" maxLength={120} value={form.translations[language].subtitle}
+                  onChange={(event) => changeTranslation(language, 'subtitle', event.target.value)} /></label>
+              <label className="admin-field admin-field--full"><span className="admin-field__label">Descrizione</span>
+                <textarea className="admin-field__input admin-field__textarea" maxLength={1000} value={form.translations[language].description}
+                  onChange={(event) => changeTranslation(language, 'description', event.target.value)} /></label>
+              <label className="admin-field admin-field--full"><span className="admin-field__label">Note (una per ogni nota italiana)</span>
+                <textarea className="admin-field__input admin-field__textarea" value={form.translations[language].notesText}
+                  onChange={(event) => changeTranslation(language, 'notesText', event.target.value)} /></label>
+            </fieldset>
+          ))}
 
           <label className="admin-field">
             <span className="admin-field__label">Prezzo</span>
@@ -83,16 +119,11 @@ export function MenuItemForm({ sections, initialSectionId, item, onCancel, onSub
             <span className="admin-field__help">Inserisci solo il numero; il simbolo € viene aggiunto automaticamente.</span>
           </label>
 
-          <label className="admin-field admin-field--full">
-            <span className="admin-field__label">Note</span>
-            <textarea className="admin-field__input admin-field__textarea" value={form.notesText} placeholder="Una nota per riga" onChange={(event) => change('notesText', event.target.value)} />
-          </label>
-
           {error && <p className="admin-feedback admin-feedback--error admin-field--full" role="alert">{error}</p>}
 
           <div className="admin-modal__actions admin-field--full">
             <button type="button" className="admin-button admin-button--ghost" onClick={onCancel} disabled={isSaving}>Annulla</button>
-            <button type="submit" className="admin-button admin-button--primary" disabled={isSaving}>{isSaving ? 'Salvataggio…' : 'Salva piatto'}</button>
+            <button type="submit" className="admin-button admin-button--primary" disabled={isSaving}>{isSaving ? (form.autoTranslate ? 'Traduzione in corso…' : 'Salvataggio…') : 'Salva piatto'}</button>
           </div>
         </form>
       </section>

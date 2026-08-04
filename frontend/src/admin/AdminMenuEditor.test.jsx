@@ -5,6 +5,7 @@ import { AdminMenuEditor } from './AdminMenuEditor.jsx';
 
 const api = vi.hoisted(() => ({
   adminLogout: vi.fn(),
+  backfillAdminMenuTranslations: vi.fn(),
   createAdminMenuItem: vi.fn(),
   deleteAdminMenuItem: vi.fn(),
   fetchAdminMenuSections: vi.fn(),
@@ -35,6 +36,12 @@ beforeEach(() => {
     ...initialSections[0],
     items: [{ ...initialSections[0].items[0], id, ...payload }]
   }]);
+  api.createAdminMenuItem.mockResolvedValue(structuredClone(initialSections));
+  api.backfillAdminMenuTranslations.mockResolvedValue({
+    updatedItems: 1,
+    completeItems: 0,
+    sections: structuredClone(initialSections)
+  });
 });
 
 afterEach(cleanup);
@@ -77,5 +84,30 @@ describe('AdminMenuEditor edit requests', () => {
     );
     expect(typeof api.updateAdminMenuItem.mock.calls[0][1].price).toBe('number');
     expect(await screen.findByText('18,5 €')).toBeTruthy();
+  });
+});
+
+describe('AdminMenuEditor translations', () => {
+  it('defaults new items to autoTranslate and preserves manual translations while editing', async () => {
+    const user = userEvent.setup();
+    api.fetchAdminMenuSections.mockResolvedValueOnce(structuredClone(initialSections));
+    render(<AdminMenuEditor onSignedOut={vi.fn()} />);
+    await screen.findByRole('heading', { name: 'Piatto test' });
+    await user.click(screen.getAllByRole('button', { name: 'Aggiungi piatto' })[0]);
+    expect(screen.getByRole('checkbox', { name: /Traduci automaticamente/ }).checked).toBe(true);
+    await user.type(screen.getAllByRole('textbox', { name: 'Nome *' })[0], 'Nuovo');
+    await user.click(screen.getByRole('button', { name: 'Salva piatto' }));
+    await waitFor(() => expect(api.createAdminMenuItem).toHaveBeenCalledOnce());
+    expect(api.createAdminMenuItem.mock.calls[0][0]).toEqual(expect.objectContaining({ autoTranslate: true }));
+  });
+
+  it('confirms backfill and reports counts', async () => {
+    const user = userEvent.setup();
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    api.fetchAdminMenuSections.mockResolvedValueOnce(structuredClone(initialSections));
+    render(<AdminMenuEditor onSignedOut={vi.fn()} />);
+    await user.click(await screen.findByRole('button', { name: 'Genera traduzioni mancanti' }));
+    expect(await screen.findByText(/1 voci; 0 erano già complete/)).toBeTruthy();
+    expect(api.backfillAdminMenuTranslations).toHaveBeenCalledOnce();
   });
 });

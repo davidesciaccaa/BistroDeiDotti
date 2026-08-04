@@ -23,8 +23,26 @@ export function normalizeApiPrice(value) {
 export function cloneMenuItem(item) {
   return {
     ...item,
-    notes: Array.isArray(item?.notes) ? [...item.notes] : []
+    notes: Array.isArray(item?.notes) ? [...item.notes] : [],
+    translations: normalizeTranslations(item?.translations)
   };
+}
+
+function normalizeTranslations(value) {
+  if (value == null) return {};
+  if (typeof value !== 'object' || Array.isArray(value)) throw new TypeError('Traduzioni menu non valide.');
+  return Object.fromEntries(['en', 'de'].filter((language) => value[language] != null).map((language) => {
+    const translated = value[language];
+    if (typeof translated !== 'object' || !Array.isArray(translated.notes ?? [])) {
+      throw new TypeError(`Traduzione ${language} non valida.`);
+    }
+    return [language, {
+      name: String(translated.name ?? ''),
+      subtitle: String(translated.subtitle ?? ''),
+      description: String(translated.description ?? ''),
+      notes: (translated.notes ?? []).map((note) => String(note))
+    }];
+  }));
 }
 
 export function normalizeMenuSections(payload) {

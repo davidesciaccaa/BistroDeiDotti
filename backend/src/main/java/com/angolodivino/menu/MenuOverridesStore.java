@@ -300,6 +300,15 @@ public class MenuOverridesStore {
                 if (item.price() != null && item.price().scale() > 2) {
                     throw new IllegalArgumentException("Price has more than two decimals for: " + item.id());
                 }
+                for (Map.Entry<String, LocalizedMenuItemText> entry : item.translations().entrySet()) {
+                    if (!Set.of("en", "de").contains(entry.getKey()) || entry.getValue() == null) {
+                        throw new IllegalArgumentException("Invalid translation language for: " + item.id());
+                    }
+                    if (entry.getValue().notes() != null
+                            && entry.getValue().notes().stream().anyMatch(note -> note == null)) {
+                        throw new IllegalArgumentException("Invalid translated note for: " + item.id());
+                    }
+                }
             }
         }
     }
@@ -330,7 +339,7 @@ public class MenuOverridesStore {
             for (MenuItemResponse item : section.items()) {
                 String legacy = prices.get(item.id());
                 items.add(legacy == null ? item : new MenuItemResponse(item.id(), item.name(), item.subtitle(),
-                        item.description(), item.notes(), MenuItemResponse.parsePrice(legacy)));
+                        item.description(), item.notes(), MenuItemResponse.parsePrice(legacy), item.translations()));
             }
             migrated.add(new MenuSectionResponse(section.id(), section.title(), section.description(), items));
         }

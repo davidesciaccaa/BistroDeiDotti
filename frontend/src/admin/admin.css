@@ -604,6 +604,32 @@
   grid-column: 1 / -1;
 }
 
+.admin-language-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 18px;
+  border: 1px solid rgba(23, 19, 19, 0.14);
+  border-radius: 6px;
+}
+
+.admin-language-fields legend {
+  padding: 0 8px;
+  color: var(--wine-premium);
+  font-family: var(--font-brand), serif;
+  font-weight: 700;
+}
+
+.admin-language-fields:disabled { opacity: 0.55; }
+
+.admin-translation-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+}
+
 .admin-modal__actions {
   display: flex;
   justify-content: flex-end;
@@ -669,6 +695,8 @@
   .admin-menu-form {
     grid-template-columns: 1fr;
   }
+
+  .admin-language-fields { grid-template-columns: 1fr; }
 
   .admin-field--full {
     grid-column: auto;

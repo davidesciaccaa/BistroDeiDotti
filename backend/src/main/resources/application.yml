@@ -31,3 +31,11 @@ app:
     data-directory: ${MENU_DATA_DIRECTORY:data}
     default-resource: menu.default.json
     legacy-overrides-file: ${MENU_LEGACY_OVERRIDES_FILE:${MENU_OVERRIDES_FILE:data/menu-overrides.json}}
+  translation:
+    enabled: ${MENU_TRANSLATION_ENABLED:false}
+    auth-key: ${DEEPL_AUTH_KEY:}
+    source-language: IT
+    target-languages:
+      - EN
+      - DE
+    timeout: 10s
